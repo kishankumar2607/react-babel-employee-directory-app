@@ -1,0 +1,172 @@
+/* Resetting some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f4f8;
+    color: #333;
+    margin: 3rem 0rem;
+  }
+  
+  h1 {
+    text-align: center;
+    margin: 1rem 0rem 3rem;
+    font-size: 2.5rem;
+    color: #4a90e2;
+    letter-spacing: 1px;
+  }
+
+  h2 {
+    text-align: center;
+    margin: 1rem 0rem 3rem;
+    font-size: 2rem;
+    color: #4a90e2;
+    letter-spacing: 1px;
+  }
+  
+  /* Main container for the content */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Search Box */
+  .search-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  input[type="text"] {
+    width: 30%;
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  
+  
+  /* Employee Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border: 2px solid #4a90e2;
+    border-radius: 10px;
+  }
+  
+  th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #4a90e2;
+    color: white;
+    font-size: 1.1rem;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  tr:hover {
+    background-color: #f1f5ff;
+  }
+  
+  td {
+    color: #000000;
+  }
+  
+  /* Add Employee Form */
+  form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  form div{
+    margin-bottom: 1rem;
+  }
+  
+  label {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #000000;
+    margin-right: 0.8rem;
+  }
+  
+  input, select {
+    padding: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #000000;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+    min-width: 200px;
+    transition: border-color 0.3s ease;
+  }
+
+  input:focus, select:focus {
+    border-color: #4a90e2;
+  }
+
+  input[type="text"]:focus {
+    border-color: #1a73e8;
+  }
+  
+  button {
+    padding: 12px;
+    margin: 1.5rem 0rem 2rem;
+    background-color: #1a73e8;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border: 2px solid #1a73e8;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: transparent;   
+    color: #1a73e8;
+  }
+
+  .error {
+    display: block;
+    color: red;
+    font-size: 0.9rem;
+  }  
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .search-container input[type="text"] {
+      width: 80%;
+    }
+  
+    table {
+      font-size: 0.9rem;
+    }
+  
+    h1 {
+      font-size: 2rem;
+    }
+  }
+  
