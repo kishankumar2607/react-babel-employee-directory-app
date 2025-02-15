@@ -13,6 +13,18 @@ class EmployeeSearch extends React.Component {
   }
 }
 
+// Helper function to format an ISO date string to DD/MM/YYYY
+const formatDate = isoDate => {
+  if (!isoDate) return "N/A";
+  const date = new Date(isoDate);
+  if (isNaN(date.getTime())) return "Invalid Date";
+  return date.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric"
+  });
+};
+
 //Class to display the employee table
 class EmployeeTable extends React.Component {
   render() {
@@ -22,7 +34,7 @@ class EmployeeTable extends React.Component {
     } = this.props;
     return /*#__PURE__*/React.createElement("div", null, employees.length > 0 ? /*#__PURE__*/React.createElement("table", null, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "First Name"), /*#__PURE__*/React.createElement("th", null, "Last Name"), /*#__PURE__*/React.createElement("th", null, "Age"), /*#__PURE__*/React.createElement("th", null, "Date of Joining"), /*#__PURE__*/React.createElement("th", null, "Title"), /*#__PURE__*/React.createElement("th", null, "Department"), /*#__PURE__*/React.createElement("th", null, "Employee Type"), /*#__PURE__*/React.createElement("th", null, "Status"))), /*#__PURE__*/React.createElement("tbody", null, employees.map((employee, index) => /*#__PURE__*/React.createElement("tr", {
       key: index
-    }, /*#__PURE__*/React.createElement("td", null, employee.firstName), /*#__PURE__*/React.createElement("td", null, employee.lastName), /*#__PURE__*/React.createElement("td", null, employee.age), /*#__PURE__*/React.createElement("td", null, employee.dateOfJoining), /*#__PURE__*/React.createElement("td", null, employee.title), /*#__PURE__*/React.createElement("td", null, employee.department), /*#__PURE__*/React.createElement("td", null, employee.employeeType), /*#__PURE__*/React.createElement("td", null, employee.currentStatus === 1 ? "Working" : "Inactive"))))) : /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React.createElement("td", null, employee.firstName), /*#__PURE__*/React.createElement("td", null, employee.lastName), /*#__PURE__*/React.createElement("td", null, employee.age), /*#__PURE__*/React.createElement("td", null, formatDate(employee.dateOfJoining)), /*#__PURE__*/React.createElement("td", null, employee.title), /*#__PURE__*/React.createElement("td", null, employee.department), /*#__PURE__*/React.createElement("td", null, employee.employeeType), /*#__PURE__*/React.createElement("td", null, employee.currentStatus === true || 1 ? "Working" : "Retired"))))) : /*#__PURE__*/React.createElement("div", {
       className: "no-employees"
     }, "No employees found"));
   }
@@ -111,7 +123,7 @@ class EmployeeCreate extends React.Component {
     }
     try {
       //Send a POST request to the GraphQL API with the employee data
-      const response = await fetch("http://localhost:3000/graphql", {
+      const response = await fetch("/graphql", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -123,7 +135,7 @@ class EmployeeCreate extends React.Component {
               $firstName: String!
               $lastName: String!
               $age: Int!
-              $dateOfJoining: String!
+              $dateOfJoining: Date!
               $title: String!
               $department: String!
               $employeeType: String!
@@ -286,7 +298,7 @@ class EmployeeDirectory extends React.Component {
   //Function to fetch the list of employees from the GraphQL API
   fetchEmployees = async () => {
     try {
-      const response = await fetch("http://localhost:3000/graphql", {
+      const response = await fetch("/graphql", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

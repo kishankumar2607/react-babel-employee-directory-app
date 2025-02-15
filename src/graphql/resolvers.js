@@ -1,6 +1,9 @@
 const Employee = require('../models/EmployeeModel');
+const GraphQLDate = require('../graphql/GraphQLDate');
 
 const resolvers = {
+  Date : GraphQLDate,
+  
   Query: {
     getEmployees: async () => {
       try {

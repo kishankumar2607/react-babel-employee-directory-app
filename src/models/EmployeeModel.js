@@ -16,7 +16,7 @@ const employeeSchema = new mongoose.Schema({
         max: 70
     },
     dateOfJoining: {
-        type: String,
+        type: Date,
         required: true
     },
     title: {
@@ -33,7 +33,7 @@ const employeeSchema = new mongoose.Schema({
         required: true
     },
     currentStatus: {
-        type: Number,
+        type: Boolean,
         default: 1
     },
 });

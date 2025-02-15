@@ -18,6 +18,18 @@ class EmployeeSearch extends React.Component {
   }
 }
 
+// Helper function to format an ISO date string to DD/MM/YYYY
+const formatDate = (isoDate) => {
+  if (!isoDate) return "N/A";
+  const date = new Date(isoDate);
+  if (isNaN(date.getTime())) return "Invalid Date";
+  return date.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+};
+
 //Class to display the employee table
 class EmployeeTable extends React.Component {
   render() {
@@ -47,12 +59,12 @@ class EmployeeTable extends React.Component {
                   <td>{employee.firstName}</td>
                   <td>{employee.lastName}</td>
                   <td>{employee.age}</td>
-                  <td>{employee.dateOfJoining}</td>
+                  <td>{formatDate(employee.dateOfJoining)}</td>
                   <td>{employee.title}</td>
                   <td>{employee.department}</td>
                   <td>{employee.employeeType}</td>
                   <td>
-                    {employee.currentStatus === 1 ? "Working" : "Inactive"}
+                    {employee.currentStatus === true || 1 ? "Working" : "Retired"}
                   </td>
                 </tr>
               ))}
@@ -142,7 +154,7 @@ class EmployeeCreate extends React.Component {
 
     try {
       //Send a POST request to the GraphQL API with the employee data
-      const response = await fetch("http://localhost:3000/graphql", {
+      const response = await fetch("/graphql", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -154,7 +166,7 @@ class EmployeeCreate extends React.Component {
               $firstName: String!
               $lastName: String!
               $age: Int!
-              $dateOfJoining: String!
+              $dateOfJoining: Date!
               $title: String!
               $department: String!
               $employeeType: String!
@@ -333,7 +345,7 @@ class EmployeeDirectory extends React.Component {
   //Function to fetch the list of employees from the GraphQL API
   fetchEmployees = async () => {
     try {
-      const response = await fetch("http://localhost:3000/graphql", {
+      const response = await fetch("/graphql", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
