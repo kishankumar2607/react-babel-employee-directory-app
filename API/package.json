@@ -6,8 +6,6 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "compile": "babel src/components --presets @babel/react --out-dir public",
-    "watch": "babel src/components --presets @babel/react --out-dir public --watch --verbose",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -22,9 +20,6 @@
     "mongoose": "^8.9.7"
   },
   "devDependencies": {
-    "@babel/cli": "^7.26.4",
-    "@babel/core": "^7.26.0",
-    "@babel/preset-react": "^7.26.3",
     "nodemon": "^3.1.9"
   }
 }

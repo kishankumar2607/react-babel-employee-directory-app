@@ -12,26 +12,18 @@ const app = express();
 
 app.use(cors());
 
-app.use(express.static(path.join(__dirname, '../public')));
-
-app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 const server = new ApolloServer({ typeDefs, resolvers });
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 7000;
 
 async function startServer() {
   await server.start();
 
   server.applyMiddleware({ app, path: "/graphql" });
 
-  app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-  });
-
   app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
     console.log(`GraphQL is running at http://localhost:${PORT}${server.graphqlPath}`);
   });
 }

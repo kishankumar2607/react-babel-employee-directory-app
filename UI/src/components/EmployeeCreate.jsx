@@ -1,85 +1,8 @@
-//Class to search employees for the Employee Directory
-class EmployeeSearch extends React.Component {
-  // Function to handle the search input and pass the value to the parent component
-  handleSearch = (e) => {
-    this.props.setSearchTerm(e.target.value);
-  };
 
-  render() {
-    return (
-      <div>
-        <input
-          type="text"
-          placeholder="Search Employees..."
-          onChange={this.handleSearch}
-        />
-      </div>
-    );
-  }
-}
-
-// Helper function to format an ISO date string to DD/MM/YYYY
-const formatDate = (isoDate) => {
-  if (!isoDate) return "N/A";
-  const date = new Date(isoDate);
-  if (isNaN(date.getTime())) return "Invalid Date";
-  return date.toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
-};
-
-//Class to display the employee table
-class EmployeeTable extends React.Component {
-  render() {
-    // Destructuring employees from props
-    const { employees } = this.props;
-
-    return (
-      <div>
-        {employees.length > 0 ? (
-          <table>
-            <thead>
-              <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Age</th>
-                <th>Date of Joining</th>
-                <th>Title</th>
-                <th>Department</th>
-                <th>Employee Type</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* Map through the employee data and create a row for each employee */}
-              {employees.map((employee, index) => (
-                <tr key={index}>
-                  <td>{employee.firstName}</td>
-                  <td>{employee.lastName}</td>
-                  <td>{employee.age}</td>
-                  <td>{formatDate(employee.dateOfJoining)}</td>
-                  <td>{employee.title}</td>
-                  <td>{employee.department}</td>
-                  <td>{employee.employeeType}</td>
-                  <td>
-                    {employee.currentStatus === true || 1 ? "Working" : "Retired"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <div className="no-employees">No employees found</div>
-        )}
-      </div>
-    );
-  }
-}
+import React from "react";
 
 //Class to create a new employee
-class EmployeeCreate extends React.Component {
+export default class EmployeeCreate extends React.Component {
   //Initial state of the form fields
   constructor(props) {
     super(props);
@@ -154,7 +77,7 @@ class EmployeeCreate extends React.Component {
 
     try {
       //Send a POST request to the GraphQL API with the employee data
-      const response = await fetch("/graphql", {
+      const response = await fetch("http://localhost:8000/graphql", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -162,36 +85,36 @@ class EmployeeCreate extends React.Component {
         body: JSON.stringify({
           // GraphQL mutation to create a new employee
           query: `
-            mutation CreateEmployee(
-              $firstName: String!
-              $lastName: String!
-              $age: Int!
-              $dateOfJoining: Date!
-              $title: String!
-              $department: String!
-              $employeeType: String!
-            ) {
-              createEmployee(
-                firstName: $firstName
-                lastName: $lastName
-                age: $age
-                dateOfJoining: $dateOfJoining
-                title: $title
-                department: $department
-                employeeType: $employeeType
+              mutation CreateEmployee(
+                $firstName: String!
+                $lastName: String!
+                $age: Int!
+                $dateOfJoining: Date!
+                $title: String!
+                $department: String!
+                $employeeType: String!
               ) {
-                id
-                firstName
-                lastName
-                age
-                dateOfJoining
-                title
-                department
-                employeeType
-                currentStatus
+                createEmployee(
+                  firstName: $firstName
+                  lastName: $lastName
+                  age: $age
+                  dateOfJoining: $dateOfJoining
+                  title: $title
+                  department: $department
+                  employeeType: $employeeType
+                ) {
+                  id
+                  firstName
+                  lastName
+                  age
+                  dateOfJoining
+                  title
+                  department
+                  employeeType
+                  currentStatus
+                }
               }
-            }
-          `,
+            `,
           //variable values for the mutation properties of the employee data
           variables: {
             firstName: this.state.firstName,
@@ -328,103 +251,3 @@ class EmployeeCreate extends React.Component {
     );
   }
 }
-
-//Parent class to display the Employee Directory
-class EmployeeDirectory extends React.Component {
-  //Initial state of the search term and employees
-  state = {
-    searchTerm: "",
-    employees: [],
-  };
-
-  // Fetch employees when the component mounts
-  componentDidMount() {
-    this.fetchEmployees();
-  }
-
-  //Function to fetch the list of employees from the GraphQL API
-  fetchEmployees = async () => {
-    try {
-      const response = await fetch("/graphql", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query: `
-            {
-              getEmployees {
-                id
-                firstName
-                lastName
-                age
-                dateOfJoining
-                title
-                department
-                employeeType
-                currentStatus
-              }
-            }
-          `,
-        }),
-      });
-
-      //Get the response data from the GraphQL API
-      const result = await response.json();
-      if (result.errors) {
-        console.log("Error fetching employees", result.errors);
-        return;
-      }
-
-      // Update the employees state with the fetched data
-      this.setState({ employees: result.data.getEmployees });
-    } catch (error) {
-      console.log("Error fetching employees", result.errors);
-    }
-  };
-
-  // Handling search term change and updating state
-  handleSearch = (searchTerm) => {
-    this.setState({ searchTerm });
-  };
-
-  // Adding a new employee to the employee list
-  addEmployee = (employee) => {
-    this.setState((prevState) => ({
-      employees: [...prevState.employees, employee],
-    }));
-  };
-
-  render() {
-    // Filter employees based on the search term in the state
-    const filteredEmployees = this.state.employees.filter((employee) =>
-      Object.values(employee).some((value) =>
-        value
-          .toString()
-          .toLowerCase()
-          .includes(this.state.searchTerm.toLowerCase())
-      )
-    );
-
-    return (
-      <div className="container">
-        <h1>Employee Directory</h1>
-        <EmployeeSearch setSearchTerm={this.handleSearch} />
-        <EmployeeTable employees={filteredEmployees} />
-        <EmployeeCreate addEmployee={this.addEmployee} />
-      </div>
-    );
-  }
-}
-
-class App extends React.Component {
-  render() {
-    return (
-      <div>
-        <EmployeeDirectory />
-      </div>
-    );
-  }
-}
-
-ReactDOM.render(<App />, document.getElementById("root"));
