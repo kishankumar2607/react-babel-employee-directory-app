@@ -63,13 +63,6 @@ export default class EmployeeDirectory extends React.Component {
     this.setState({ searchTerm });
   };
 
-  // Adding a new employee to the employee list
-  addEmployee = (employee) => {
-    this.setState((prevState) => ({
-      employees: [...prevState.employees, employee],
-    }));
-  };
-
   render() {
     // Filter employees based on the search term in the state
     const filteredEmployees = this.state.employees.filter((employee) =>
@@ -83,10 +76,9 @@ export default class EmployeeDirectory extends React.Component {
 
     return (
       <div className="container">
-        <h1>Employee Directory</h1>
+        <h1 className='employee-directory'>Employee Directory</h1>
         <EmployeeSearch setSearchTerm={this.handleSearch} />
         <EmployeeTable employees={filteredEmployees} />
-        <EmployeeCreate addEmployee={this.addEmployee} />
       </div>
     );
   }

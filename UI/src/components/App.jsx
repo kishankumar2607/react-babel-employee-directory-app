@@ -1,9 +1,13 @@
 
 import React from "react";
 import * as ReactDOM from "react-dom/client";
-import EmployeeDirectory from './EmployeeDirectory.jsx';
+import { HashRouter as Router } from "react-router-dom";
+import NavPage from './NavPage.jsx';
 
-
-const element = <EmployeeDirectory />;
+const element = (
+    <Router>
+        <NavPage />
+    </Router>
+);
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(element);

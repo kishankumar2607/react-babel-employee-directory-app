@@ -1,4 +1,3 @@
-
 import React from "react";
 
 //Class to create a new employee
@@ -135,9 +134,6 @@ export default class EmployeeCreate extends React.Component {
         return;
       }
 
-      // Adding newly created employee to the parent component
-      this.props.addEmployee(result.data.createEmployee);
-
       // Resetting form fields after successful submission
       this.setState({
         firstName: "",
@@ -167,87 +163,91 @@ export default class EmployeeCreate extends React.Component {
     } = this.state;
 
     return (
-      <form onSubmit={this.handleSubmit}>
-        <h2>Add Employee</h2>
-        <div>
-          <label>First Name:</label>
-          <input
-            type="text"
-            name="firstName"
-            value={firstName}
-            onChange={this.handleChange}
-          />
-          {errors.firstName && <div className="error">{errors.firstName}</div>}
-        </div>
-        <div>
-          <label>Last Name:</label>
-          <input
-            type="text"
-            name="lastName"
-            value={lastName}
-            onChange={this.handleChange}
-          />
-          {errors.lastName && <div className="error">{errors.lastName}</div>}
-        </div>
-        <div>
-          <label>Age:</label>
-          <input
-            type="number"
-            name="age"
-            value={age}
-            onChange={this.handleChange}
-          />
-          {errors.age && <div className="error">{errors.age}</div>}
-        </div>
-        <div>
-          <label>Date of Joining:</label>
-          <input
-            type="date"
-            name="dateOfJoining"
-            value={dateOfJoining}
-            onChange={this.handleChange}
-          />
-          {errors.dateOfJoining && (
-            <div className="error">{errors.dateOfJoining}</div>
-          )}
-        </div>
-        <div>
-          <label>Title:</label>
-          <select name="title" value={title} onChange={this.handleChange}>
-            <option value="Employee">Employee</option>
-            <option value="Manager">Manager</option>
-            <option value="Director">Director</option>
-            <option value="VP">VP</option>
-          </select>
-        </div>
-        <div>
-          <label>Department:</label>
-          <select
-            name="department"
-            value={department}
-            onChange={this.handleChange}
-          >
-            <option value="IT">IT</option>
-            <option value="Marketing">Marketing</option>
-            <option value="HR">HR</option>
-            <option value="Engineering">Engineering</option>
-          </select>
-        </div>
-        <div>
-          <label>Employee Type:</label>
-          <select
-            name="employeeType"
-            value={employeeType}
-            onChange={this.handleChange}
-          >
-            <option value="FullTime">FullTime</option>
-            <option value="PartTime">PartTime</option>
-            <option value="Contract">Contract</option>
-            <option value="Seasonal">Seasonal</option>
-          </select>
-        </div>
-        <button type="submit">Add Employee</button>
-      </form>
+      <div className="create-employee">
+        <form onSubmit={this.handleSubmit}>
+          <h2 className="create-employee-heading">Add Employee</h2>
+          <div>
+            <label>First Name:</label>
+            <input
+              type="text"
+              name="firstName"
+              value={firstName}
+              onChange={this.handleChange}
+            />
+            {errors.firstName && (
+              <div className="error">{errors.firstName}</div>
+            )}
+          </div>
+          <div>
+            <label>Last Name:</label>
+            <input
+              type="text"
+              name="lastName"
+              value={lastName}
+              onChange={this.handleChange}
+            />
+            {errors.lastName && <div className="error">{errors.lastName}</div>}
+          </div>
+          <div>
+            <label>Age:</label>
+            <input
+              type="number"
+              name="age"
+              value={age}
+              onChange={this.handleChange}
+            />
+            {errors.age && <div className="error">{errors.age}</div>}
+          </div>
+          <div>
+            <label>Date of Joining:</label>
+            <input
+              type="date"
+              name="dateOfJoining"
+              value={dateOfJoining}
+              onChange={this.handleChange}
+            />
+            {errors.dateOfJoining && (
+              <div className="error">{errors.dateOfJoining}</div>
+            )}
+          </div>
+          <div>
+            <label>Title:</label>
+            <select name="title" value={title} onChange={this.handleChange}>
+              <option value="Employee">Employee</option>
+              <option value="Manager">Manager</option>
+              <option value="Director">Director</option>
+              <option value="VP">VP</option>
+            </select>
+          </div>
+          <div>
+            <label>Department:</label>
+            <select
+              name="department"
+              value={department}
+              onChange={this.handleChange}
+            >
+              <option value="IT">IT</option>
+              <option value="Marketing">Marketing</option>
+              <option value="HR">HR</option>
+              <option value="Engineering">Engineering</option>
+            </select>
+          </div>
+          <div>
+            <label>Employee Type:</label>
+            <select
+              name="employeeType"
+              value={employeeType}
+              onChange={this.handleChange}
+            >
+              <option value="FullTime">FullTime</option>
+              <option value="PartTime">PartTime</option>
+              <option value="Contract">Contract</option>
+              <option value="Seasonal">Seasonal</option>
+            </select>
+          </div>
+          <button type="submit">Add Employee</button>
+        </form>
+      </div>
     );
   }
 }
