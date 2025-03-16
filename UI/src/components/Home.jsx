@@ -10,8 +10,8 @@ const Home = () => {
           Efficiently manage your employees with our intuitive and powerful
           platform.
         </p>
-        <Link to="/employee-list">
-          <a className="cta-button">View Employees</a>
+        <Link to="/employee-list" >
+          <p className="cta-button">View Employees</p>
         </Link>
       </div>
 

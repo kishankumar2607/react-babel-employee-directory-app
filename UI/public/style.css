@@ -46,7 +46,7 @@
 }
 
 .nav-links a.active {
-  background-color: #4a90e2;
+  background-color: #007bff;
   border-radius: 5px;
   color: #ffffff;
   font-weight: 700;
@@ -58,14 +58,15 @@
 }
 
 .nav-links a:hover {
-  color: #4a90e2;
+  color: #007bff;
 }
 
 .employee-directory {
   text-align: center;
   margin-bottom: 3rem;
+  margin-top: 0;
   font-size: 2.5rem;
-  color: #4a90e2;
+  color: #007bff;
   letter-spacing: 1px;
 }
 
@@ -73,7 +74,7 @@
   text-align: center;
   margin-bottom: 3rem;
   font-size: 2rem;
-  color: #4a90e2;
+  color: #007bff;
   letter-spacing: 1px;
 }
 
@@ -229,9 +230,7 @@ button:hover {
 /* Home Page Styles */
 .home-container {
   text-align: center;
-  padding: 50px 20px;
-  background-color: #f4f6f9;
-  font-family: 'Arial', sans-serif;
+  padding: 20px 20px 50px;
 }
 
 /* Hero Section */
@@ -241,9 +240,6 @@ button:hover {
   padding: 80px 30px;
   border-radius: 10px;
   margin-bottom: 50px;
-  background-image: url('https://source.unsplash.com/1600x900/?office');
-  background-size: cover;
-  background-position: center;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
@@ -266,7 +262,7 @@ button:hover {
   padding: 14px 30px;
   font-size: 20px;
   text-decoration: none;
-  border-radius: 50px;
+  border-radius: 8px;
   transition: background-color 0.3s ease-in-out;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
@@ -283,7 +279,7 @@ button:hover {
 
 .features h2 {
   font-size: 36px;
-  color: #007bff;
+  color: #000000;
   margin-bottom: 30px;
   animation: fadeIn 3s ease-in-out;
 }
@@ -333,7 +329,7 @@ button:hover {
 
 .testimonial h2 {
   font-size: 32px;
-  color: #007bff;
+  color: #000000;
   margin-bottom: 30px;
 }
 
@@ -383,6 +379,82 @@ button:hover {
       transform: translateY(0);
   }
 }
+
+/* About Page Styles */
+.about-container {
+  text-align: center;
+  padding: 20px 20px 50px;
+}
+
+/* Hero Section */
+.hero-section {
+  background-color: #007bff;
+  color: white;
+  padding: 80px 30px;
+  border-radius: 10px;
+  margin-bottom: 50px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.hero-section h1 {
+  font-size: 48px;
+  margin-bottom: 20px;
+  animation: fadeIn 2s ease-in-out;
+}
+
+.hero-section p {
+  font-size: 20px;
+  margin-bottom: 0;
+  animation: fadeIn 2s ease-in-out;
+}
+
+/* Section Styles */
+.section {
+  background: white;
+  padding: 40px;
+  margin: 30px auto;
+  max-width: 800px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.section h2 {
+  font-size: 32px;
+  color: #007bff;
+  margin-bottom: 15px;
+}
+
+/* Mission Section */
+.mission {
+  background: #007bff;
+  color: white !important;
+  margin-top: 1rem;
+}
+
+.mission h2 {
+  font-size: 32px;
+  color: #ffffff;
+}
+
+/* Contact Section */
+.contact p {
+  font-size: 18px;
+  color: #555;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 
 
 /* Responsive Design */
