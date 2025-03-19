@@ -1,23 +1,21 @@
+import React from "react";
+import EmployeeSearch from "./EmployeeSearch.jsx";
+import EmployeeTable from "./EmployeeTable.jsx";
 
-import React from 'react';
-import EmployeeSearch from './EmployeeSearch.jsx';
-import EmployeeTable from './EmployeeTable.jsx';
-import EmployeeCreate from './EmployeeCreate.jsx';
-
-//Parent class to display the Employee Directory
 export default class EmployeeDirectory extends React.Component {
-  //Initial state of the search term and employees
+  // Define the initial state
   state = {
     searchTerm: "",
     employees: [],
+    selectedType: "All",
   };
 
-  // Fetch employees when the component mounts
   componentDidMount() {
     this.fetchEmployees();
+    this.setTypeFromQueryParams();
   }
 
-  //Function to fetch the list of employees from the GraphQL API
+  // Fetch employees when the component mounts
   fetchEmployees = async () => {
     try {
       const response = await fetch("http://localhost:8000/graphql", {
@@ -44,39 +42,70 @@ export default class EmployeeDirectory extends React.Component {
         }),
       });
 
-      //Get the response data from the GraphQL API
       const result = await response.json();
       if (result.errors) {
         console.log("Error fetching employees", result.errors);
         return;
       }
 
-      // Update the employees state with the fetched data
       this.setState({ employees: result.data.getEmployees });
     } catch (error) {
-      console.log("Error fetching employees", result.errors);
+      console.log("Error fetching employees", error);
     }
   };
 
-  // Handling search term change and updating state
+  // Function to extract and set selectedType from the query parameter
+  setTypeFromQueryParams = () => {
+    const params = new URLSearchParams(window.location.search);
+    // Get the type query parameter
+    const type = params.get("type");
+    if (type) {
+      this.setState({ selectedType: type });
+    }
+  };
+
+  // Function to handle search input change event
   handleSearch = (searchTerm) => {
     this.setState({ searchTerm });
   };
 
+  // Function to handle filter change event
+  handleFilterChange = (e) => {
+    const selectedType = e.target.value;
+    this.setState({ selectedType });
+
+    // Update the URL with the selected type
+    const queryString = selectedType === "All" ? "" : `?type=${selectedType}`;
+    window.history.pushState({}, "", `/employee-list${queryString}`);
+  };
+
   render() {
-    // Filter employees based on the search term in the state
-    const filteredEmployees = this.state.employees.filter((employee) =>
+    const { searchTerm, employees, selectedType } = this.state;
+
+    // Filter employees based on the search term
+    let filteredEmployees = employees.filter((employee) =>
       Object.values(employee).some((value) =>
-        value
-          .toString()
-          .toLowerCase()
-          .includes(this.state.searchTerm.toLowerCase())
+        value.toString().toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
 
+    // Filter employees based on the selected type
+    if (selectedType !== "All") {
+      filteredEmployees = filteredEmployees.filter(
+        (employee) => employee.employeeType === selectedType
+      );
+    }
+
     return (
       <div className="container">
-        <h1 className='employee-directory'>Employee Directory</h1>
+        <h1 className="employee-directory">Employee Directory</h1>
+        <select value={selectedType} onChange={this.handleFilterChange}>
+          <option value="All">All Employees</option>
+          <option value="FullTime">Full Time</option>
+          <option value="PartTime">Part Time</option>
+          <option value="Contract">Contract</option>
+          <option value="SeasonalEmployee">Seasonal</option>
+        </select>
         <EmployeeSearch setSearchTerm={this.handleSearch} />
         <EmployeeTable employees={filteredEmployees} />
       </div>
