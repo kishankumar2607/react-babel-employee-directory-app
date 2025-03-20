@@ -70,6 +70,13 @@
   letter-spacing: 1px;
 }
 
+.filter-search{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 .create-employee-heading {
   text-align: center;
   margin-bottom: 3rem;
@@ -135,6 +142,41 @@ tr:hover {
 
 td {
   color: #000000;
+}
+
+.loading {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  padding: 20px;
+  color: #3498db;
+}
+
+.viewIcons{
+  font-size: 1.5rem;
+  color: #000000;
+  cursor: pointer;
+}
+
+.editIcons{
+  font-size: 1.5rem;
+  color: #4a90e2;
+  cursor: pointer;
+  margin: 0px 10px;
+}
+
+.deleteIcons{
+  font-size: 1.5rem;
+  color: #ff0000;
+  cursor: pointer;
+}
+
+.no-employees{
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ff0000;
+  margin-top: 2rem;
 }
 
 /* Add Employee Form */
@@ -249,9 +291,9 @@ button:hover {
   animation: fadeIn 2s ease-in-out;
 }
 
-.hero-section p {
+.hero-text {
   font-size: 20px;
-  margin-bottom: 30px;
+  margin-bottom: 30px !important;
   animation: fadeIn 2s ease-in-out;
 }
 
@@ -259,8 +301,8 @@ button:hover {
   display: inline-block;
   background-color: #ffdd57;
   color: black;
-  padding: 14px 30px;
   font-size: 20px;
+  padding: 1rem 1.5rem;
   text-decoration: none;
   border-radius: 8px;
   transition: background-color 0.3s ease-in-out;

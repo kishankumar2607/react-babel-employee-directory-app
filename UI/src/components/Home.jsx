@@ -6,7 +6,7 @@ const Home = () => {
     <div className="home-container">
       <div className="hero-section">
         <h1>Welcome to Employee Management System</h1>
-        <p>
+        <p className="hero-text">
           Efficiently manage your employees with our intuitive and powerful
           platform.
         </p>

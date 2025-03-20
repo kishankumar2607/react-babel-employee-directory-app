@@ -1,6 +1,7 @@
-
 import React from "react";
-
+import { MdDelete } from "react-icons/md";
+import { FaEye, FaEdit } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 // Helper function to format an ISO date string to DD/MM/YYYY
 const formatDate = (isoDate) => {
@@ -14,51 +15,66 @@ const formatDate = (isoDate) => {
   });
 };
 
+// Functional EmployeeTable component
+const EmployeeTable = ({ employees, onDeleteEmployee }) => {
+  const navigate = useNavigate();
 
-//Class to display the employee table
-export default class EmployeeTable extends React.Component {
-    render() {
-      // Destructuring employees from props
-      const { employees } = this.props;
-  
-      return (
-        <div>
-          {employees.length > 0 ? (
-            <table>
-              <thead>
-                <tr>
-                  <th>First Name</th>
-                  <th>Last Name</th>
-                  <th>Age</th>
-                  <th>Date of Joining</th>
-                  <th>Title</th>
-                  <th>Department</th>
-                  <th>Employee Type</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* Map through the employee data and create a row for each employee */}
-                {employees.map((employee, index) => (
-                  <tr key={index}>
-                    <td>{employee.firstName}</td>
-                    <td>{employee.lastName}</td>
-                    <td>{employee.age}</td>
-                    <td>{formatDate(employee.dateOfJoining)}</td>
-                    <td>{employee.title}</td>
-                    <td>{employee.department}</td>
-                    <td>{employee.employeeType}</td>
-                    <td>
-                      {employee.currentStatus === true || 1 ? "Working" : "Retired"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <div className="no-employees">No employees found</div>
-          )}
-        </div>
-      );
-    }
-  }
+  const handleClick = (id) => {
+    navigate(`/employee/${id}`);
+  };
+
+
+  return (
+    <div>
+      {employees.length > 0 ? (
+        <table>
+          <thead>
+            <tr>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Age</th>
+              <th>Date of Joining</th>
+              <th>Title</th>
+              <th>Department</th>
+              <th>Employee Type</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {employees.map((employee) => (
+              <tr key={employee.id}>
+                <td>{employee.firstName}</td>
+                <td>{employee.lastName}</td>
+                <td>{employee.age}</td>
+                <td>{formatDate(employee.dateOfJoining)}</td>
+                <td>{employee.title}</td>
+                <td>{employee.department}</td>
+                <td>{employee.employeeType}</td>
+                <td>{employee.currentStatus ? "Working" : "Retired"}</td>
+                <td>
+                  <FaEye
+                    onClick={() => handleClick(employee.id)}
+                    className="viewIcons"
+                  />
+                  <FaEdit
+                    onClick={() => console.log("Edit Clicked")}
+                    className="editIcons"
+                  />
+                  <MdDelete
+                    onClick={() => onDeleteEmployee(employee.id)}
+                    className="deleteIcons"
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <div className="no-employees">No employees found</div>
+      )}
+    </div>
+  );
+};
+
+export default EmployeeTable;

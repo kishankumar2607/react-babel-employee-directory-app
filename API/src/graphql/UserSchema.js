@@ -29,6 +29,13 @@ const typeDefs = gql`
       department: String!
       employeeType: String!
     ): Employee
+
+    deleteEmployee(id: ID!): DeleteResponse
+  }
+
+  type DeleteResponse {
+    success: Boolean!
+    message: String!
   }
 `;
 
