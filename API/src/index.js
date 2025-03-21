@@ -8,16 +8,19 @@ const typeDefs = require("./graphql/UserSchema");
 const resolvers = require("./graphql/resolvers");
 require("./helpers/connection");
 
+// Create an express application
 const app = express();
 
 app.use(cors());
 
 app.use(express.json());
 
+// Serve the static files from the React app
 const server = new ApolloServer({ typeDefs, resolvers });
 
 const PORT = process.env.PORT || 7000;
 
+// Start the server and listen on the specified port
 async function startServer() {
   await server.start();
 

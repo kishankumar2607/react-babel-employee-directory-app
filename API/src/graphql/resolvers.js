@@ -4,7 +4,9 @@ const GraphQLDate = require("../graphql/GraphQLDate");
 const resolvers = {
   Date: GraphQLDate,
 
+  // resolvers for the queries and mutations
   Query: {
+    // Fetch all employees (used for fetching all employees)
     getEmployees: async () => {
       try {
         const employees = await Employee.find();
@@ -18,6 +20,7 @@ const resolvers = {
       }
     },
 
+    // Fetch employee by ID (used for fetching a single employee)
     getEmployeeById: async (_, { id }) => {
       try {
         const employee = await Employee.findById(id);
@@ -34,13 +37,16 @@ const resolvers = {
       }
     },
 
+    // Fetch employees by type (used for fetching employees by type)
     getEmployeesByType: async (_, { employeeType }) => {
       // Filter employees by employeeType
       return await Employee.find({ employeeType });
     },
   },
 
+  // Mutations for employee
   Mutation: {
+    // Create a new employee (used for creating a new employee)
     createEmployee: async (
       _,
       {
@@ -70,6 +76,7 @@ const resolvers = {
       }
     },
 
+    // Delete an employee (used for deleting an employee)
     deleteEmployee: async (_, { id }) => {
       // Logic to delete the employee from the database
       const employee = await Employee.findByIdAndDelete(id);
@@ -86,6 +93,7 @@ const resolvers = {
       };
     },
 
+    // Update an employee (used for updating an employee)
     updateEmployee: async (_, { id, title, department, currentStatus }) => {
       try {
         const updatedEmployee = await Employee.findByIdAndUpdate(

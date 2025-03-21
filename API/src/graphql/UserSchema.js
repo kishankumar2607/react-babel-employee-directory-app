@@ -1,5 +1,6 @@
 const { gql } = require("apollo-server-express");
 
+// Define the Employee type with the required fields
 const typeDefs = gql`
   scalar Date
 
