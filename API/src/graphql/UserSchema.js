@@ -17,6 +17,7 @@ const typeDefs = gql`
 
   type Query {
     getEmployees: [Employee]
+    getEmployeeById(id: ID!): Employee
   }
 
   type Mutation {
@@ -30,7 +31,16 @@ const typeDefs = gql`
       employeeType: String!
     ): Employee
 
-    deleteEmployee(id: ID!): DeleteResponse
+    deleteEmployee(
+      id: ID!
+    ): DeleteResponse
+
+    updateEmployee(
+      id: ID!, 
+      title: String, 
+      department: String, 
+      currentStatus: Boolean
+    ): Employee
   }
 
   type DeleteResponse {

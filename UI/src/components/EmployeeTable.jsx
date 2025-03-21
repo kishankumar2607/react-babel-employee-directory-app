@@ -23,6 +23,9 @@ const EmployeeTable = ({ employees, onDeleteEmployee }) => {
     navigate(`/employee/${id}`);
   };
 
+  const handleEdit = (id) => {
+    navigate(`/edit-employee/${id}`);
+  };
 
   return (
     <div>
@@ -58,7 +61,7 @@ const EmployeeTable = ({ employees, onDeleteEmployee }) => {
                     className="viewIcons"
                   />
                   <FaEdit
-                    onClick={() => console.log("Edit Clicked")}
+                    onClick={() => handleEdit(employee.id)}
                     className="editIcons"
                   />
                   <MdDelete

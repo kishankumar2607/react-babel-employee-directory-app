@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import moment from "moment"; // Import moment.js
+import moment from "moment";
 
 const EmployeeDetails = () => {
   const { id } = useParams();
@@ -10,7 +10,7 @@ const EmployeeDetails = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchEmployees = async () => {
+    const fetchEmployee = async () => {
       try {
         const response = await axios({
           method: "post",
@@ -21,7 +21,7 @@ const EmployeeDetails = () => {
           data: {
             query: `
               query {
-                getEmployees {
+                getEmployeeById(id: "${id}") {
                   id
                   firstName
                   lastName
@@ -37,11 +37,10 @@ const EmployeeDetails = () => {
           },
         });
 
-        const employees = response.data.data.getEmployees;
-        const selectedEmployee = employees.find((emp) => emp.id === id);
+        const employee = response.data.data.getEmployeeById;
 
-        if (selectedEmployee) {
-          setEmployee(selectedEmployee);
+        if (employee) {
+          setEmployee(employee);
         } else {
           setError("Employee not found");
         }
@@ -53,45 +52,84 @@ const EmployeeDetails = () => {
     };
 
     if (id) {
-      fetchEmployees();
+      fetchEmployee();
     }
   }, [id]);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (isLoading) return <div className="loading">Loading...</div>;
+  if (error) return <div className="error-message">Error: {error}</div>;
 
   return (
-    <div>
+    <div className="employee-details-container">
+      <h1 className="page-title">Employee Details</h1>
       {employee ? (
-        <div>
-          <h1>
+        <div className="employee-card">
+          <h2 className="employee-name">
             {employee.firstName} {employee.lastName}
-          </h1>
-          <p>
-            <strong>Title:</strong> {employee.title}
-          </p>
-          <p>
-            <strong>Department:</strong> {employee.department}
-          </p>
-          <p>
-            <strong>Age:</strong> {employee.age}
-          </p>
-          <p>
-            <strong>Date of Joining:</strong>
-            {employee.dateOfJoining
-              ? moment(employee.dateOfJoining).format("MMMM DD, YYYY")
-              : "N/A"}
-          </p>
-          <p>
-            <strong>Status:</strong>{" "}
-            {employee.currentStatus ? "Working" : "Retired"}
-          </p>
-          <p>
-            <strong>Employee Type:</strong> {employee.employeeType}
-          </p>
+          </h2>
+          <table className="employee-table">
+            <tbody>
+              <tr>
+                <td>
+                  <strong>Title</strong>
+                </td>
+                <td>:</td>
+                <td>{employee.title}</td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Department</strong>
+                </td>
+                <td>:</td>
+                <td>{employee.department}</td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Age</strong>
+                </td>
+                <td>:</td>
+                <td>{employee.age}</td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Date of Joining</strong>
+                </td>
+                <td>:</td>
+                <td>
+                  {employee.dateOfJoining
+                    ? moment(employee.dateOfJoining).format("MMMM DD, YYYY")
+                    : "N/A"}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Status</strong>
+                </td>
+                <td>:</td>
+                <td>
+                  <span
+                    className={
+                      employee.currentStatus
+                        ? "status-working"
+                        : "status-retired"
+                    }
+                  >
+                    {employee.currentStatus ? "Working" : "Retired"}
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Employee Type</strong>
+                </td>
+                <td>:</td>
+                <td>{employee.employeeType}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       ) : (
-        <div>Employee not found</div>
+        <div className="not-found">Employee not found</div>
       )}
     </div>
   );
