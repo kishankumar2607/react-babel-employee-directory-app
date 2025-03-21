@@ -18,6 +18,7 @@ const typeDefs = gql`
   type Query {
     getEmployees: [Employee]
     getEmployeeById(id: ID!): Employee
+    getEmployeesByType(employeeType: String!): [Employee]
   }
 
   type Mutation {

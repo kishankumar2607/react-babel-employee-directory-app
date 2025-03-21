@@ -33,6 +33,11 @@ const resolvers = {
         throw new Error("Error fetching employee by ID");
       }
     },
+
+    getEmployeesByType: async (_, { employeeType }) => {
+      // Filter employees by employeeType
+      return await Employee.find({ employeeType });
+    },
   },
 
   Mutation: {

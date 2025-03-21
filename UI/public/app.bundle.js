@@ -1025,11 +1025,12 @@ var EmployeeDetails = function EmployeeDetails() {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ EmployeeDirectory)
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/dist/development/chunk-K6CSEXPM.mjs");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
 /* harmony import */ var _EmployeeSearch_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EmployeeSearch.jsx */ "./src/components/EmployeeSearch.jsx");
 /* harmony import */ var _EmployeeTable_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./EmployeeTable.jsx */ "./src/components/EmployeeTable.jsx");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
@@ -1053,6 +1054,12 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
 
 
 
+
+
+// Helper hook to parse query params
+var useQuery = function useQuery() {
+  return new URLSearchParams((0,react_router_dom__WEBPACK_IMPORTED_MODULE_3__.useLocation)().search);
+};
 var EmployeeDirectory = /*#__PURE__*/function (_Component) {
   function EmployeeDirectory() {
     var _this;
@@ -1064,53 +1071,71 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
     _defineProperty(_this, "state", {
       searchTerm: "",
       employees: [],
-      loading: true // Add loading state
+      loading: true,
+      selectedEmployeeType: "All"
+    });
+    // Method to update the URL with the selected employee type
+    _defineProperty(_this, "updateUrlWithEmployeeType", function () {
+      var selectedEmployeeType = _this.state.selectedEmployeeType;
+      _this.props.navigate("?employeeType=".concat(selectedEmployeeType));
     });
     _defineProperty(_this, "fetchEmployees", /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var response, result;
+      var selectedEmployeeType, query, response, result;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
-            _context.prev = 0;
-            _context.next = 3;
-            return axios__WEBPACK_IMPORTED_MODULE_3__["default"].post("http://localhost:8000/graphql", {
-              query: "\n          {\n            getEmployees {\n              id\n              firstName\n              lastName\n              age\n              dateOfJoining\n              title\n              department\n              employeeType\n              currentStatus\n            }\n          }\n        "
-            });
-          case 3:
-            response = _context.sent;
+            selectedEmployeeType = _this.state.selectedEmployeeType;
+            query = "\n      {\n        getEmployees {\n          id\n          firstName\n          lastName\n          age\n          dateOfJoining\n          title\n          department\n          employeeType\n          currentStatus\n        }\n      }\n    "; // If a specific employee type is selected, modify the query to filter by employee type
+            if (selectedEmployeeType !== "All") {
+              query = "\n        {\n          getEmployeesByType(employeeType: \"".concat(selectedEmployeeType, "\") {\n            id\n            firstName\n            lastName\n            age\n            dateOfJoining\n            title\n            department\n            employeeType\n            currentStatus\n          }\n        }\n      ");
+            }
+            _context.prev = 3;
             _context.next = 6;
-            return response.data;
+            return axios__WEBPACK_IMPORTED_MODULE_4__["default"].post("http://localhost:8000/graphql", {
+              query: query
+            });
           case 6:
+            response = _context.sent;
+            _context.next = 9;
+            return response.data;
+          case 9:
             result = _context.sent;
             if (!result.errors) {
-              _context.next = 10;
+              _context.next = 13;
               break;
             }
             console.log("Error fetching employees", result.errors);
             return _context.abrupt("return");
-          case 10:
-            _this.setState({
-              employees: result.data.getEmployees,
-              loading: false
-            }); // Set loading to false after fetching
-            _context.next = 17;
-            break;
           case 13:
-            _context.prev = 13;
-            _context.t0 = _context["catch"](0);
+            _this.setState({
+              employees: result.data.getEmployees || result.data.getEmployeesByType,
+              loading: false
+            });
+            _context.next = 20;
+            break;
+          case 16:
+            _context.prev = 16;
+            _context.t0 = _context["catch"](3);
             console.log("Error fetching employees", _context.t0);
             _this.setState({
               loading: false
-            }); // Set loading to false if error occurs
-          case 17:
+            });
+          case 20:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[0, 13]]);
+      }, _callee, null, [[3, 16]]);
     })));
     _defineProperty(_this, "handleSearch", function (searchTerm) {
       _this.setState({
         searchTerm: searchTerm
+      });
+    });
+    _defineProperty(_this, "handleEmployeeTypeChange", function (e) {
+      _this.setState({
+        selectedEmployeeType: e.target.value
+      }, function () {
+        _this.fetchEmployees();
       });
     });
     _defineProperty(_this, "handleDeleteEmployee", /*#__PURE__*/function () {
@@ -1128,7 +1153,7 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
             case 3:
               _context2.prev = 3;
               _context2.next = 6;
-              return axios__WEBPACK_IMPORTED_MODULE_3__["default"].post("http://localhost:8000/graphql", {
+              return axios__WEBPACK_IMPORTED_MODULE_4__["default"].post("http://localhost:8000/graphql", {
                 query: "\n          mutation {\n            deleteEmployee(id: \"".concat(id, "\") {\n              success\n              message\n            }\n          }\n        ")
               });
             case 6:
@@ -1179,12 +1204,21 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
       this.fetchEmployees();
     }
   }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps, prevState) {
+      // If the selected employee type changes, update the URL
+      if (prevState.selectedEmployeeType !== this.state.selectedEmployeeType) {
+        this.updateUrlWithEmployeeType();
+      }
+    }
+  }, {
     key: "render",
     value: function render() {
       var _this$state = this.state,
         searchTerm = _this$state.searchTerm,
         employees = _this$state.employees,
-        loading = _this$state.loading;
+        loading = _this$state.loading,
+        selectedEmployeeType = _this$state.selectedEmployeeType;
       var filteredEmployees = employees.filter(function (employee) {
         return Object.values(employee).some(function (value) {
           return value.toString().toLowerCase().includes(searchTerm.toLowerCase());
@@ -1198,7 +1232,20 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
         className: "filter-search"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_EmployeeSearch_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
         setSearchTerm: this.handleSearch
-      })), loading ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+        value: selectedEmployeeType,
+        onChange: this.handleEmployeeTypeChange
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+        value: "All"
+      }, "All Employees"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+        value: "FullTime"
+      }, "Full-Time Employees"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+        value: "PartTime"
+      }, "Part-Time Employees"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+        value: "Contract"
+      }, "Contract Employees"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+        value: "Seasonal"
+      }, "Seasonal Employees")))), loading ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
         className: "loading"
       }, "Loading...") : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_EmployeeTable_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {
         employees: filteredEmployees,
@@ -1206,8 +1253,17 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
       }));
     }
   }]);
-}(react__WEBPACK_IMPORTED_MODULE_0__.Component);
-
+}(react__WEBPACK_IMPORTED_MODULE_0__.Component); // Wrapper to include the useLocation and useNavigate hooks for URL management
+var EmployeeDirectoryWithUrlFilter = function EmployeeDirectoryWithUrlFilter() {
+  var query = useQuery();
+  var selectedEmployeeType = query.get("employeeType") || "All";
+  var navigate = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_3__.useNavigate)();
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(EmployeeDirectory, {
+    navigate: navigate,
+    selectedEmployeeType: selectedEmployeeType
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (EmployeeDirectoryWithUrlFilter);
 
 /***/ }),
 
