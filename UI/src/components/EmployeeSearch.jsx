@@ -10,7 +10,7 @@ export default class EmployeeSearch extends React.Component {
   
     render() {
       return (
-        <div>
+        <div className='search-employee'>
           <input
             type="text"
             placeholder="Search Employees..."

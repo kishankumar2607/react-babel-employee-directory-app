@@ -1,7 +1,8 @@
 import React from "react";
+import { Navigate } from "react-router-dom";
 
 //Class to create a new employee
-export default class EmployeeCreate extends React.Component {
+class EmployeeCreate extends React.Component {
   //Initial state of the form fields
   constructor(props) {
     super(props);
@@ -14,6 +15,7 @@ export default class EmployeeCreate extends React.Component {
       department: "IT",
       employeeType: "FullTime",
       errors: {},
+      redirectToEmployeeList: false,
     };
   }
 
@@ -68,7 +70,6 @@ export default class EmployeeCreate extends React.Component {
   //Function to handle the form submission
   handleSubmit = async (e) => {
     e.preventDefault();
-
     //check if the form is valid
     if (!this.validateForm()) {
       return;
@@ -144,6 +145,10 @@ export default class EmployeeCreate extends React.Component {
         department: "IT",
         employeeType: "FullTime",
       });
+
+      // Trigger redirect to the employee list
+      this.setState({ redirectToEmployeeList: true });
+      
     } catch (error) {
       console.log("Error creating employees", error);
     }
@@ -160,13 +165,19 @@ export default class EmployeeCreate extends React.Component {
       department,
       employeeType,
       errors,
+      redirectToEmployeeList,
     } = this.state;
+
+    // If redirection is triggered, navigate to the employee list
+    if (redirectToEmployeeList) {
+      return <Navigate to="/employee-list" />;
+    }
 
     return (
       <div className="create-employee">
         <form onSubmit={this.handleSubmit}>
           <h2 className="create-employee-heading">Add Employee</h2>
-          <div>
+          <div className="form-group">
             <label>First Name:</label>
             <input
               type="text"
@@ -178,7 +189,7 @@ export default class EmployeeCreate extends React.Component {
               <div className="error">{errors.firstName}</div>
             )}
           </div>
-          <div>
+          <div className="form-group">
             <label>Last Name:</label>
             <input
               type="text"
@@ -188,7 +199,7 @@ export default class EmployeeCreate extends React.Component {
             />
             {errors.lastName && <div className="error">{errors.lastName}</div>}
           </div>
-          <div>
+          <div className="form-group">
             <label>Age:</label>
             <input
               type="number"
@@ -198,7 +209,7 @@ export default class EmployeeCreate extends React.Component {
             />
             {errors.age && <div className="error">{errors.age}</div>}
           </div>
-          <div>
+          <div className="form-group">
             <label>Date of Joining:</label>
             <input
               type="date"
@@ -210,7 +221,7 @@ export default class EmployeeCreate extends React.Component {
               <div className="error">{errors.dateOfJoining}</div>
             )}
           </div>
-          <div>
+          <div className="form-group">
             <label>Title:</label>
             <select name="title" value={title} onChange={this.handleChange}>
               <option value="Employee">Employee</option>
@@ -219,7 +230,7 @@ export default class EmployeeCreate extends React.Component {
               <option value="VP">VP</option>
             </select>
           </div>
-          <div>
+          <div className="form-group">
             <label>Department:</label>
             <select
               name="department"
@@ -232,7 +243,7 @@ export default class EmployeeCreate extends React.Component {
               <option value="Engineering">Engineering</option>
             </select>
           </div>
-          <div>
+          <div className="form-group">
             <label>Employee Type:</label>
             <select
               name="employeeType"
@@ -251,3 +262,5 @@ export default class EmployeeCreate extends React.Component {
     );
   }
 }
+
+export default EmployeeCreate;
