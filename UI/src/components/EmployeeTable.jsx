@@ -15,14 +15,16 @@ const formatDate = (isoDate) => {
   });
 };
 
-// Functional EmployeeTable component
 const EmployeeTable = ({ employees, onDeleteEmployee }) => {
+  // Hook to navigate to a different route
   const navigate = useNavigate();
 
+  // Function to get the details of an employee
   const handleClick = (id) => {
     navigate(`/employee/${id}`);
   };
 
+  // Function to edit the details of an employee
   const handleEdit = (id) => {
     navigate(`/edit-employee/${id}`);
   };

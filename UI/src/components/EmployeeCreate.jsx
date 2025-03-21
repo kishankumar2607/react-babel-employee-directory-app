@@ -1,7 +1,6 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 
-//Class to create a new employee
 class EmployeeCreate extends React.Component {
   //Initial state of the form fields
   constructor(props) {
@@ -148,7 +147,6 @@ class EmployeeCreate extends React.Component {
 
       // Trigger redirect to the employee list
       this.setState({ redirectToEmployeeList: true });
-      
     } catch (error) {
       console.log("Error creating employees", error);
     }

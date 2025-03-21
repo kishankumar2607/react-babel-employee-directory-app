@@ -10,6 +10,7 @@ const useQuery = () => {
 };
 
 class EmployeeDirectory extends Component {
+  //Set initial state of the component
   state = {
     searchTerm: "",
     employees: [],
@@ -17,10 +18,12 @@ class EmployeeDirectory extends Component {
     selectedEmployeeType: "All",
   };
 
+  // Fetch employees when the component mounts
   componentDidMount() {
     this.fetchEmployees();
   }
 
+  // Update the URL when the selected employee type changes
   componentDidUpdate(prevProps, prevState) {
     // If the selected employee type changes, update the URL
     if (prevState.selectedEmployeeType !== this.state.selectedEmployeeType) {
@@ -34,9 +37,11 @@ class EmployeeDirectory extends Component {
     this.props.navigate(`?employeeType=${selectedEmployeeType}`);
   };
 
+  // Fetch employees from the server using the GraphQL API
   fetchEmployees = async () => {
     const { selectedEmployeeType } = this.state;
 
+    // Prepare the GraphQL query based on the selected employee type
     let query = `
       {
         getEmployees {
@@ -73,15 +78,19 @@ class EmployeeDirectory extends Component {
     }
 
     try {
+      // Make a POST request to the GraphQL API
       const response = await axios.post("http://localhost:8000/graphql", {
         query,
       });
+
+      // Extract the employee data from the response
       const result = await response.data;
       if (result.errors) {
         console.log("Error fetching employees", result.errors);
         return;
       }
 
+      // Update the state with the fetched employees
       this.setState({
         employees: result.data.getEmployees || result.data.getEmployeesByType,
         loading: false,
@@ -92,23 +101,28 @@ class EmployeeDirectory extends Component {
     }
   };
 
+  // Method to handle search input
   handleSearch = (searchTerm) => {
     this.setState({ searchTerm });
   };
 
+  // Method to handle employee type change
   handleEmployeeTypeChange = (e) => {
     this.setState({ selectedEmployeeType: e.target.value }, () => {
       this.fetchEmployees();
     });
   };
 
+  // Method to handle employee deletion
   handleDeleteEmployee = async (id) => {
+    // Confirm deletion before proceeding
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this employee?"
     );
     if (!confirmDelete) return;
 
     try {
+      // Make a POST request to the GraphQL API to delete the employee
       const response = await axios.post("http://localhost:8000/graphql", {
         query: `
           mutation {
@@ -120,12 +134,14 @@ class EmployeeDirectory extends Component {
         `,
       });
 
+      // Extract the response data from the response
       const result = response.data;
       if (result.errors) {
         console.log("Error deleting employee", result.errors);
         return;
       }
 
+      // Delete the employee from the state if the deletion was successful
       if (result.data.deleteEmployee.success) {
         alert("Employee deleted successfully");
         this.setState((prevState) => ({
@@ -143,8 +159,10 @@ class EmployeeDirectory extends Component {
   };
 
   render() {
+    // Destructure the state variables
     const { searchTerm, employees, loading, selectedEmployeeType } = this.state;
 
+    // Filter the employees based on the search term
     let filteredEmployees = employees.filter((employee) =>
       Object.values(employee).some((value) =>
         value.toString().toLowerCase().includes(searchTerm.toLowerCase())
@@ -189,7 +207,12 @@ const EmployeeDirectoryWithUrlFilter = () => {
   const selectedEmployeeType = query.get("employeeType") || "All";
   const navigate = useNavigate();
 
-  return <EmployeeDirectory navigate={navigate} selectedEmployeeType={selectedEmployeeType} />;
+  return (
+    <EmployeeDirectory
+      navigate={navigate}
+      selectedEmployeeType={selectedEmployeeType}
+    />
+  );
 };
 
 export default EmployeeDirectoryWithUrlFilter;

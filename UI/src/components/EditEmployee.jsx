@@ -21,6 +21,7 @@ const EditEmployee = () => {
   const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
+    // Fetch Employee Details
     const fetchEmployee = async () => {
       try {
         const response = await axios({
@@ -53,6 +54,7 @@ const EditEmployee = () => {
           (emp) => emp.id === id
         );
 
+        // If employee not found, set error message
         if (foundEmployee) {
           setEmployee(foundEmployee);
         } else {
@@ -63,6 +65,7 @@ const EditEmployee = () => {
       }
     };
 
+    // call fetchEmployee function
     fetchEmployee();
   }, [id]);
 
@@ -83,6 +86,7 @@ const EditEmployee = () => {
     setSuccessMessage("");
 
     try {
+      // Update employee details
       const response = await axios.post("http://localhost:8000/graphql", {
         query: `
           mutation {
@@ -101,6 +105,7 @@ const EditEmployee = () => {
         `,
       });
 
+      // Check for errors in the response
       if (response.data.errors) {
         setError("Failed to update employee");
       } else {
@@ -117,6 +122,7 @@ const EditEmployee = () => {
   return (
     <div className="edit-employee-container">
       <h2>Edit Employee</h2>
+      {/* Display error and success messages */}
       {error && <p className="error-message">{error}</p>}
       {successMessage && <p className="success-message">{successMessage}</p>}
 

@@ -356,7 +356,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+// This element contains the NavPage and Footer components
 var element = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_4__.HashRouter, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NavPage_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Footer_jsx__WEBPACK_IMPORTED_MODULE_3__["default"], null));
+
+// Render the application to the DOM
 var root = react_dom_client__WEBPACK_IMPORTED_MODULE_1__.createRoot(document.getElementById("root"));
 root.render(element);
 
@@ -428,6 +432,7 @@ var EditEmployee = function EditEmployee() {
     successMessage = _useState8[0],
     setSuccessMessage = _useState8[1];
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    // Fetch Employee Details
     var fetchEmployee = /*#__PURE__*/function () {
       var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
         var response, foundEmployee;
@@ -451,7 +456,7 @@ var EditEmployee = function EditEmployee() {
               // Find the employee by ID
               foundEmployee = response.data.data.getEmployees.find(function (emp) {
                 return emp.id === id;
-              });
+              }); // If employee not found, set error message
               if (foundEmployee) {
                 setEmployee(foundEmployee);
               } else {
@@ -473,6 +478,8 @@ var EditEmployee = function EditEmployee() {
         return _ref.apply(this, arguments);
       };
     }();
+
+    // call fetchEmployee function
     fetchEmployee();
   }, [id]);
 
@@ -504,6 +511,7 @@ var EditEmployee = function EditEmployee() {
             });
           case 7:
             response = _context2.sent;
+            // Check for errors in the response
             if (response.data.errors) {
               setError("Failed to update employee");
             } else {
@@ -656,8 +664,6 @@ function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" 
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 
 
-
-//Class to create a new employee
 var EmployeeCreate = /*#__PURE__*/function (_React$Component) {
   //Initial state of the form fields
   function EmployeeCreate(props) {
@@ -970,6 +976,8 @@ var EmployeeDetails = function EmployeeDetails() {
     _useState6 = _slicedToArray(_useState5, 2),
     error = _useState6[0],
     setError = _useState6[1];
+
+  // Fetch employee details by ID from the server
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     var fetchEmployee = /*#__PURE__*/function () {
       var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
@@ -985,13 +993,15 @@ var EmployeeDetails = function EmployeeDetails() {
                 headers: {
                   "Content-Type": "application/json"
                 },
+                // Send a GraphQL query to fetch employee details by ID
                 data: {
                   query: "\n              query {\n                getEmployeeById(id: \"".concat(id, "\") {\n                  id\n                  firstName\n                  lastName\n                  age\n                  dateOfJoining\n                  title\n                  department\n                  employeeType\n                  currentStatus\n                }\n              }\n            ")
                 }
               });
             case 3:
               response = _context.sent;
-              _employee = response.data.data.getEmployeeById;
+              // Extract employee details from the response
+              _employee = response.data.data.getEmployeeById; // Set employee details in the state
               if (_employee) {
                 setEmployee(_employee);
               } else {
@@ -1015,13 +1025,19 @@ var EmployeeDetails = function EmployeeDetails() {
         return _ref.apply(this, arguments);
       };
     }();
+
+    // Fetch employee details only if ID is available
     if (id) {
       fetchEmployee();
     }
   }, [id]);
+
+  // Show loading spinner while fetching employee details
   if (isLoading) return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "loading"
   }, "Loading...");
+
+  // Show error message if there is an error while fetching employee details
   if (error) return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "error-message"
   }, "Error: ", error);
@@ -1097,6 +1113,7 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
       args[_key] = arguments[_key];
     }
     _this = _callSuper(this, EmployeeDirectory, [].concat(args));
+    //Set initial state of the component
     _defineProperty(_this, "state", {
       searchTerm: "",
       employees: [],
@@ -1108,12 +1125,13 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
       var selectedEmployeeType = _this.state.selectedEmployeeType;
       _this.props.navigate("?employeeType=".concat(selectedEmployeeType));
     });
+    // Fetch employees from the server using the GraphQL API
     _defineProperty(_this, "fetchEmployees", /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
       var selectedEmployeeType, query, response, result;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
-            selectedEmployeeType = _this.state.selectedEmployeeType;
+            selectedEmployeeType = _this.state.selectedEmployeeType; // Prepare the GraphQL query based on the selected employee type
             query = "\n      {\n        getEmployees {\n          id\n          firstName\n          lastName\n          age\n          dateOfJoining\n          title\n          department\n          employeeType\n          currentStatus\n        }\n      }\n    "; // If a specific employee type is selected, modify the query to filter by employee type
             if (selectedEmployeeType !== "All") {
               query = "\n        {\n          getEmployeesByType(employeeType: \"".concat(selectedEmployeeType, "\") {\n            id\n            firstName\n            lastName\n            age\n            dateOfJoining\n            title\n            department\n            employeeType\n            currentStatus\n          }\n        }\n      ");
@@ -1136,6 +1154,7 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
             console.log("Error fetching employees", result.errors);
             return _context.abrupt("return");
           case 13:
+            // Update the state with the fetched employees
             _this.setState({
               employees: result.data.getEmployees || result.data.getEmployeesByType,
               loading: false
@@ -1155,11 +1174,13 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
         }
       }, _callee, null, [[3, 16]]);
     })));
+    // Method to handle search input
     _defineProperty(_this, "handleSearch", function (searchTerm) {
       _this.setState({
         searchTerm: searchTerm
       });
     });
+    // Method to handle employee type change
     _defineProperty(_this, "handleEmployeeTypeChange", function (e) {
       _this.setState({
         selectedEmployeeType: e.target.value
@@ -1167,12 +1188,14 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
         _this.fetchEmployees();
       });
     });
+    // Method to handle employee deletion
     _defineProperty(_this, "handleDeleteEmployee", /*#__PURE__*/function () {
       var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2(id) {
         var confirmDelete, response, result;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
+              // Confirm deletion before proceeding
               confirmDelete = window.confirm("Are you sure you want to delete this employee?");
               if (confirmDelete) {
                 _context2.next = 3;
@@ -1187,6 +1210,7 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
               });
             case 6:
               response = _context2.sent;
+              // Extract the response data from the response
               result = response.data;
               if (!result.errors) {
                 _context2.next = 11;
@@ -1195,6 +1219,7 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
               console.log("Error deleting employee", result.errors);
               return _context2.abrupt("return");
             case 11:
+              // Delete the employee from the state if the deletion was successful
               if (result.data.deleteEmployee.success) {
                 alert("Employee deleted successfully");
                 _this.setState(function (prevState) {
@@ -1229,9 +1254,13 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
   _inherits(EmployeeDirectory, _Component);
   return _createClass(EmployeeDirectory, [{
     key: "componentDidMount",
-    value: function componentDidMount() {
+    value:
+    // Fetch employees when the component mounts
+    function componentDidMount() {
       this.fetchEmployees();
     }
+
+    // Update the URL when the selected employee type changes
   }, {
     key: "componentDidUpdate",
     value: function componentDidUpdate(prevProps, prevState) {
@@ -1243,11 +1272,14 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
   }, {
     key: "render",
     value: function render() {
+      // Destructure the state variables
       var _this$state = this.state,
         searchTerm = _this$state.searchTerm,
         employees = _this$state.employees,
         loading = _this$state.loading,
         selectedEmployeeType = _this$state.selectedEmployeeType;
+
+      // Filter the employees based on the search term
       var filteredEmployees = employees.filter(function (employee) {
         return Object.values(employee).some(function (value) {
           return value.toString().toLowerCase().includes(searchTerm.toLowerCase());
@@ -1390,15 +1422,18 @@ var formatDate = function formatDate(isoDate) {
     year: "numeric"
   });
 };
-
-// Functional EmployeeTable component
 var EmployeeTable = function EmployeeTable(_ref) {
   var employees = _ref.employees,
     onDeleteEmployee = _ref.onDeleteEmployee;
+  // Hook to navigate to a different route
   var navigate = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_1__.useNavigate)();
+
+  // Function to get the details of an employee
   var handleClick = function handleClick(id) {
     navigate("/employee/".concat(id));
   };
+
+  // Function to edit the details of an employee
   var handleEdit = function handleEdit(id) {
     navigate("/edit-employee/".concat(id));
   };

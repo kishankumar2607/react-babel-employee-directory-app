@@ -9,6 +9,7 @@ const EmployeeDetails = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Fetch employee details by ID from the server
   useEffect(() => {
     const fetchEmployee = async () => {
       try {
@@ -18,6 +19,7 @@ const EmployeeDetails = () => {
           headers: {
             "Content-Type": "application/json",
           },
+          // Send a GraphQL query to fetch employee details by ID
           data: {
             query: `
               query {
@@ -37,8 +39,10 @@ const EmployeeDetails = () => {
           },
         });
 
+        // Extract employee details from the response
         const employee = response.data.data.getEmployeeById;
 
+        // Set employee details in the state
         if (employee) {
           setEmployee(employee);
         } else {
@@ -51,12 +55,16 @@ const EmployeeDetails = () => {
       }
     };
 
+    // Fetch employee details only if ID is available
     if (id) {
       fetchEmployee();
     }
   }, [id]);
 
+  // Show loading spinner while fetching employee details
   if (isLoading) return <div className="loading">Loading...</div>;
+
+  // Show error message if there is an error while fetching employee details
   if (error) return <div className="error-message">Error: {error}</div>;
 
   return (
