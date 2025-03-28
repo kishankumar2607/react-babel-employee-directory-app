@@ -19,7 +19,7 @@ module.exports = {
                 options: {
                   name: '[name].[ext]',
                   outputPath: 'img/'
-                }
+                },
               }
             ]
           },
@@ -43,6 +43,10 @@ module.exports = {
                 ],
               },
             },
+          },
+          {
+            test: /\.css$/i,
+            use: ['style-loader', 'css-loader'],
           },
         ],
       },
