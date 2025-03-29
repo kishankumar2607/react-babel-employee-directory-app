@@ -7,13 +7,16 @@ import { useNavigate } from "react-router-dom";
 const formatDate = (isoDate) => {
   if (!isoDate) return "N/A";
   const date = new Date(isoDate);
-  if (isNaN(date.getTime())) return "Invalid Date";
+
+  // Format as DD/MM/YYYY in UTC to avoid timezone issues
   return date.toLocaleDateString("en-GB", {
+    timeZone: "UTC",
     day: "2-digit",
     month: "long",
     year: "numeric",
   });
 };
+
 
 const EmployeeTable = ({ employees, onDeleteEmployee }) => {
   // Hook to navigate to a different route

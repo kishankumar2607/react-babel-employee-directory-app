@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Swal from "sweetalert2";
+import moment from "moment";
 import EmployeeSearch from "./EmployeeSearch.jsx";
 import EmployeeTable from "./EmployeeTable.jsx";
 
@@ -19,6 +20,7 @@ class EmployeeDirectory extends Component {
     employees: [],
     loading: true,
     selectedEmployeeType: "All",
+    selectedRetirementType: "All",
   };
 
   // Fetch employees when the component mounts
@@ -104,6 +106,33 @@ class EmployeeDirectory extends Component {
     }
   };
 
+  // Function to calculate upcoming retirement (employees retiring in the next 6 months)
+  getUpcomingRetirement = () => {
+    const { selectedRetirementType } = this.state;
+    const today = moment();
+
+    return this.setState.employees.filter((employee) => {
+      const ageAtRetirement = 65; // Assuming retirement age is 60
+      const monthsToRetiment = moment().add(6, "months");
+      const retirementDate = moment(employee.dateOfJoining).add(
+        ageAtRetirement,
+        "years"
+      );
+
+      const isRetirementUpcoming =
+        employee.age === 64 && retirementDate.isBefore(monthsToRetiment);
+
+      if (
+        isRetirementUpcoming &&
+        (selectedRetirementType === "All" ||
+          employee.employeeType === selectedRetirementType)
+      ) {
+        return true;
+      }
+      return false;
+    });
+  };
+
   // Method to handle search input
   handleSearch = (searchTerm) => {
     this.setState({ searchTerm });
@@ -114,6 +143,11 @@ class EmployeeDirectory extends Component {
     this.setState({ selectedEmployeeType: e.target.value }, () => {
       this.fetchEmployees();
     });
+  };
+
+  // Method to handle retirement type change
+  handleRetirementTypeChange = (e) => {
+    this.setState({ selectedRetirementType: e.target.value });
   };
 
   // Method to handle employee deletion
@@ -138,8 +172,8 @@ class EmployeeDirectory extends Component {
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
     });
 
@@ -195,7 +229,13 @@ class EmployeeDirectory extends Component {
 
   render() {
     // Destructure the state variables
-    const { searchTerm, employees, loading, selectedEmployeeType } = this.state;
+    const {
+      searchTerm,
+      employees,
+      loading,
+      selectedEmployeeType,
+      selectedRetirementType,
+    } = this.state;
 
     // Filter the employees based on the search term
     let filteredEmployees = employees.filter((employee) =>
@@ -203,6 +243,11 @@ class EmployeeDirectory extends Component {
         value.toString().toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
+
+    // Filter the employees based on the selected retirement type
+    if (selectedRetirementType === "UpcomingRetirement") {
+      filteredEmployees = this.getUpcomingRetirement();
+    }
 
     return (
       <div className="container">
@@ -219,8 +264,25 @@ class EmployeeDirectory extends Component {
               <option value="PartTime">Part-Time Employees</option>
               <option value="Contract">Contract Employees</option>
               <option value="Seasonal">Seasonal Employees</option>
+              <option value="UpcomingRetirement">Upcoming Retirement</option>
             </select>
           </div>
+
+          {/* Show secondary filter for EmployeeType when Upcoming Retirement is selected */}
+          {selectedEmployeeType === "UpcomingRetirement" && (
+            <div>
+              <select
+                value={selectedRetirementType}
+                onChange={this.handleRetirementTypeChange}
+              >
+                <option value="All">All Employee Types</option>
+                <option value="FullTime">Full-Time</option>
+                <option value="PartTime">Part-Time</option>
+                <option value="Contract">Contract</option>
+                <option value="Seasonal">Seasonal</option>
+              </select>
+            </div>
+          )}
         </div>
 
         {loading ? (

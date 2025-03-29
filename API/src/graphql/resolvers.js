@@ -1,5 +1,6 @@
 const Employee = require("../models/EmployeeModel");
 const GraphQLDate = require("../graphql/GraphQLDate");
+const moment = require("moment");
 
 const resolvers = {
   Date: GraphQLDate,
@@ -13,6 +14,7 @@ const resolvers = {
         return employees.map((employee) => ({
           ...employee.toObject(),
           id: employee._id.toString(),
+          retirementInfo: calculateRetirementInfo(employee),
         }));
       } catch (error) {
         console.error("Error fetching employees", error);
@@ -30,6 +32,7 @@ const resolvers = {
         return {
           ...employee.toObject(),
           id: employee._id.toString(),
+          retirementInfo: calculateRetirementInfo(employee),
         };
       } catch (error) {
         console.error("Error fetching employee by ID", error);
@@ -116,6 +119,35 @@ const resolvers = {
       }
     },
   },
+};
+
+
+const calculateRetirementInfo = (employee) => {
+  const ageAtJoining = employee.age;
+  const dateOfJoining = moment(employee.dateOfJoining);
+  const retirementAge = 65;
+
+  // Calculate retirement date by adding 65 years to the joining date
+  const retirementDate = dateOfJoining.add(
+    retirementAge - ageAtJoining,
+    "years"
+  );
+
+  // Calculate duration left until retirement from today's date
+  const today = moment();
+  const durationLeft = moment.duration(retirementDate.diff(today));
+
+  // Extract years, months, and days left
+  const yearsLeft = durationLeft.years();
+  const monthsLeft = durationLeft.months();
+  const daysLeft = durationLeft.days();
+
+  // Return retirement info as an object
+  return {
+    years: yearsLeft > 0 ? yearsLeft : 0,
+    months: monthsLeft > 0 ? monthsLeft : 0,
+    days: daysLeft > 0 ? daysLeft : 0,
+  };
 };
 
 module.exports = resolvers;

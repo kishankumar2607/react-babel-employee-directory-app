@@ -33,6 +33,11 @@ const EmployeeDetails = () => {
                   department
                   employeeType
                   currentStatus
+                  retirementInfo {
+                    years
+                    months
+                    days
+                  }
                 }
               }
             `,
@@ -105,7 +110,9 @@ const EmployeeDetails = () => {
                 <td>:</td>
                 <td>
                   {employee.dateOfJoining
-                    ? moment(employee.dateOfJoining).format("MMMM DD, YYYY")
+                    ? moment(employee.dateOfJoining, "YYYY-MM-DD").format(
+                        "DD MMMM YYYY"
+                      )
                     : "N/A"}
                 </td>
               </tr>
@@ -132,6 +139,39 @@ const EmployeeDetails = () => {
                 </td>
                 <td>:</td>
                 <td>{employee.employeeType}</td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Years Left for Retirement</strong>
+                </td>
+                <td>:</td>
+                <td>
+                  {employee.retirementInfo
+                    ? `${employee.retirementInfo.years} years`
+                    : "N/A"}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Months Left for Retirement</strong>
+                </td>
+                <td>:</td>
+                <td>
+                  {employee.retirementInfo
+                    ? `${employee.retirementInfo.months} months`
+                    : "N/A"}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Days Left for Retirement</strong>
+                </td>
+                <td>:</td>
+                <td>
+                  {employee.retirementInfo
+                    ? `${employee.retirementInfo.days} days`
+                    : "N/A"}
+                </td>
               </tr>
             </tbody>
           </table>
