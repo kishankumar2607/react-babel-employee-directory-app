@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Swal from "sweetalert2";
 import EmployeeSearch from "./EmployeeSearch.jsx";
 import EmployeeTable from "./EmployeeTable.jsx";
 
@@ -118,29 +119,35 @@ class EmployeeDirectory extends Component {
   // Method to handle employee deletion
   handleDeleteEmployee = async (id) => {
     // Find the employee to check currentStatus
-  const employeeToDelete = this.state.employees.find(
-    (employee) => employee.id === id
-  );
+    const employeeToDelete = this.state.employees.find(
+      (employee) => employee.id === id
+    );
 
-  // Check if the employee's currentStatus is active
-  if (employeeToDelete && employeeToDelete.currentStatus) {
-    toast.error("CAN'T DELETE EMPLOYEE – STATUS ACTIVE", {
-      position: "top-right",
-      autoClose: 3000,
-    });
-    return; // Stop further execution if status is active
-  }
+    // Check if the employee's currentStatus is active
+    if (employeeToDelete && employeeToDelete.currentStatus) {
+      toast.error("Can't Delete Employee - Status Active", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      return; // Stop further execution if status is active
+    }
 
     // Confirm deletion before proceeding
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this employee?"
-    );
-    if (!confirmDelete) return;
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
 
-    try {
-      // Make a POST request to the GraphQL API to delete the employee
-      const response = await axios.post("http://localhost:8000/graphql", {
-        query: `
+    if (result.isConfirmed) {
+      try {
+        // Make a POST request to the GraphQL API to delete the employee
+        const response = await axios.post("http://localhost:8000/graphql", {
+          query: `
           mutation {
             deleteEmployee(id: "${id}") {
               success
@@ -148,39 +155,41 @@ class EmployeeDirectory extends Component {
             }
           }
         `,
-      });
+        });
 
-      // Extract the response data from the response
-      const result = response.data;
-      if (result.errors) {
-        toast.error("Error deleting employee", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-        console.log("Error deleting employee", result.errors);
-        return;
-      }
+        // Extract the response data from the response
+        const result = response.data;
+        if (result.errors) {
+          toast.error("Error deleting employee", {
+            position: "top-right",
+            autoClose: 3000,
+          });
+          console.log("Error deleting employee", result.errors);
+          return;
+        }
 
-      // Delete the employee from the state if the deletion was successful
-      if (result.data.deleteEmployee.success) {
-        toast.success("Employee deleted successfully", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-        this.setState((prevState) => ({
-          employees: prevState.employees.filter(
-            (employee) => employee.id !== id
-          ),
-        }));
-      } else {
-        toast.error("Failed to delete employee", {
-          position: "top-right",
-          autoClose: 3000,
-        });
+        // Delete the employee from the state if the deletion was successful
+        if (result.data.deleteEmployee.success) {
+          Swal.fire({
+            title: "Employee deleted successfully",
+            icon: "success",
+            draggable: true,
+          });
+          this.setState((prevState) => ({
+            employees: prevState.employees.filter(
+              (employee) => employee.id !== id
+            ),
+          }));
+        } else {
+          toast.error("Failed to delete employee", {
+            position: "top-right",
+            autoClose: 3000,
+          });
+        }
+      } catch (error) {
+        console.log("Error deleting employee", error);
+        alert("Error deleting employee");
       }
-    } catch (error) {
-      console.log("Error deleting employee", error);
-      alert("Error deleting employee");
     }
   };
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 class EmployeeCreate extends React.Component {
   //Initial state of the form fields
@@ -134,6 +135,15 @@ class EmployeeCreate extends React.Component {
         return;
       }
 
+      // If the employee is created successfully, show a success message
+      Swal.fire({
+        title: "Success",
+        text: "Employee created successfully!",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+
       // Resetting form fields after successful submission
       this.setState({
         firstName: "",
@@ -145,8 +155,7 @@ class EmployeeCreate extends React.Component {
         employeeType: "FullTime",
       });
 
-      // Trigger redirect to the employee list
-      this.setState({ redirectToEmployeeList: true });
+      setTimeout(() => this.setState({ redirectToEmployeeList: true }), 2000);
     } catch (error) {
       console.log("Error creating employees", error);
     }

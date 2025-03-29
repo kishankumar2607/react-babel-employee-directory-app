@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import moment from "moment";
+import Swal from "sweetalert2";
 
 const EditEmployee = () => {
   const { id } = useParams();
@@ -18,7 +19,6 @@ const EditEmployee = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     // Fetch Employee Details
@@ -83,7 +83,6 @@ const EditEmployee = () => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    setSuccessMessage("");
 
     try {
       // Update employee details
@@ -109,7 +108,13 @@ const EditEmployee = () => {
       if (response.data.errors) {
         setError("Failed to update employee");
       } else {
-        setSuccessMessage("Employee updated successfully!");
+        Swal.fire({
+          position: "center",
+          title: "Employee Updated Successfully",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 2000,
+        });
         setTimeout(() => navigate("/employee-list"), 2000);
       }
     } catch (err) {
@@ -124,7 +129,6 @@ const EditEmployee = () => {
       <h2>Edit Employee</h2>
       {/* Display error and success messages */}
       {error && <p className="error-message">{error}</p>}
-      {successMessage && <p className="success-message">{successMessage}</p>}
 
       <form onSubmit={handleSubmit} className="edit-employee-form">
         <div className="form-group">
