@@ -78,12 +78,13 @@
 
 /* Employee Directory Page Design */
 .employee-directory-page {
-  min-height: 80vh;
+  min-height: 90vh;
+  padding: 3rem 0rem;
 }
 
 .employee-directory {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
   margin-top: 0;
   font-size: 2.5rem;
   font-weight: 700;
@@ -95,7 +96,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 1.8rem;
 }
 
 /* Search Box */
@@ -522,7 +523,6 @@ select:focus {
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  height: 80vh;
 }
 
 .page-title {

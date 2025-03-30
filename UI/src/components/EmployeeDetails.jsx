@@ -1,97 +1,205 @@
-import React from "react";
-import { Table, Button } from "react-bootstrap";
-import { FaEye, FaEdit } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useParams } from "react-router-dom";
+import moment from "moment";
+import { ThreeCircles } from "react-loader-spinner";
+import { Container, Card, Table, Spinner, Alert } from "react-bootstrap";
 
-// Helper function to format an ISO date string to DD/MM/YYYY in UTC
-const formatDate = (isoDate) => {
-  if (!isoDate) return "N/A";
-  const date = new Date(isoDate);
-  if (isNaN(date.getTime())) return "Invalid Date";
-  return date.toLocaleDateString("en-GB", {
-    timeZone: "UTC",
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
-};
+const EmployeeDetails = () => {
+  const { id } = useParams();
+  const [employee, setEmployee] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-const EmployeeTable = ({ employees, onDeleteEmployee }) => {
-  const navigate = useNavigate();
+  // Fetch employee details by ID from the server
+  useEffect(() => {
+    const fetchEmployee = async () => {
+      try {
+        const response = await axios({
+          method: "post",
+          url: "http://localhost:8000/graphql",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          // GraphQL query to fetch employee details by ID
+          data: {
+            query: `
+              query {
+                getEmployeeById(id: "${id}") {
+                  id
+                  firstName
+                  lastName
+                  age
+                  dateOfJoining
+                  title
+                  department
+                  employeeType
+                  currentStatus
+                  retirementInfo {
+                    years
+                    months
+                    days
+                  }
+                }
+              }
+            `,
+          },
+        });
 
-  // Navigate to employee details page
-  const handleClick = (id) => {
-    navigate(`/employee/${id}`);
+        const emp = response.data.data.getEmployeeById;
+        if (emp) {
+          setEmployee(emp);
+        } else {
+          setError("Employee not found");
+        }
+        setIsLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setIsLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchEmployee();
+    }
+  }, [id]);
+
+  // Helper to format date using moment in UTC
+  const formatDate = (isoDate) => {
+    if (!isoDate) return "N/A";
+    return moment(isoDate).utc().format("DD MMMM YYYY");
   };
 
-  // Navigate to employee edit page
-  const handleEdit = (id) => {
-    navigate(`/edit-employee/${id}`);
-  };
+  // Display a loading spinner while fetching data
+  if (isLoading) {
+    return (
+      <Container
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "80vh" }}
+      >
+        <ThreeCircles
+          visible={true}
+          height="100"
+          width="100"
+          color="#1a73e8"
+          ariaLabel="three-circles-loading"
+          wrapperStyle={{}}
+          wrapperClass=""
+        />
+      </Container>
+    );
+  }
+
+  // Display error message if an error occurred
+  if (error) {
+    return (
+      <Container className="mt-5">
+        <Alert variant="danger">Error: {error}</Alert>
+      </Container>
+    );
+  }
+
+  // If employee is not found, you can choose to redirect or display a message
+  if (!employee) {
+    return <Navigate to="/employee-list" />;
+  }
 
   return (
-    <div>
-      {employees.length > 0 ? (
-        <Table striped bordered hover responsive>
-          <thead>
-            <tr>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Age</th>
-              <th>Date of Joining</th>
-              <th>Title</th>
-              <th>Department</th>
-              <th>Employee Type</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {employees.map((employee) => (
-              <tr key={employee.id}>
-                <td>{employee.firstName}</td>
-                <td>{employee.lastName}</td>
-                <td>{employee.age}</td>
-                <td>{formatDate(employee.dateOfJoining)}</td>
-                <td>{employee.title}</td>
-                <td>{employee.department}</td>
-                <td>{employee.employeeType}</td>
-                <td>{employee.currentStatus ? "Working" : "Retired"}</td>
-                <td>
-                  <Button
-                    variant="info"
-                    size="sm"
-                    onClick={() => handleClick(employee.id)}
-                    className="me-1"
-                  >
-                    <FaEye />
-                  </Button>
-                  <Button
-                    variant="warning"
-                    size="sm"
-                    onClick={() => handleEdit(employee.id)}
-                    className="me-1"
-                  >
-                    <FaEdit />
-                  </Button>
-                  <Button
-                    variant="danger"
-                    size="sm"
-                    onClick={() => onDeleteEmployee(employee.id)}
-                  >
-                    <MdDelete />
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+    <Container className="my-5">
+      <h1 className="employee-directory">Employee Details</h1>
+      {employee ? (
+        <Card className="shadow">
+          <Card.Header className="bg-primary text-white fs-4 fw-bold">
+            Full Name : {employee.firstName} {employee.lastName}
+          </Card.Header>
+          <Card.Body>
+            <Table bordered responsive>
+              <tbody className="fs-6">
+                <tr>
+                  <td>
+                    <strong>Title</strong>
+                  </td>
+                  <td>{employee.title}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Department</strong>
+                  </td>
+                  <td>{employee.department}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Age</strong>
+                  </td>
+                  <td>{employee.age}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Date of Joining</strong>
+                  </td>
+                  <td>{formatDate(employee.dateOfJoining)}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Status</strong>
+                  </td>
+                  <td>
+                    <span
+                      className={
+                        employee.currentStatus ? "status-working" : "status-retired"
+                      }
+                    >
+                      {employee.currentStatus ? "Working" : "Retired"}
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Employee Type</strong>
+                  </td>
+                  <td>{employee.employeeType}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Years Left for Retirement</strong>
+                  </td>
+                  <td>
+                    {employee.retirementInfo
+                      ? `${employee.retirementInfo.years} years`
+                      : "N/A"}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Months Left for Retirement</strong>
+                  </td>
+                  <td>
+                    {employee.retirementInfo
+                      ? `${employee.retirementInfo.months} months`
+                      : "N/A"}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Days Left for Retirement</strong>
+                  </td>
+                  <td>
+                    {employee.retirementInfo
+                      ? `${employee.retirementInfo.days} days`
+                      : "N/A"}
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+          </Card.Body>
+        </Card>
       ) : (
-        <div className="no-employees">No employees found</div>
+        <Alert variant="warning" className="text-center">
+          Employee not found
+        </Alert>
       )}
-    </div>
+    </Container>
   );
 };
 
-export default EmployeeTable;
+export default EmployeeDetails;
