@@ -1,9 +1,9 @@
-import React from "react";
+import React, { Component } from "react";
 import { Navigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { Container, Form, Button, Row, Col } from "react-bootstrap";
 
-class EmployeeCreate extends React.Component {
-  //Initial state of the form fields
+class EmployeeCreate extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -19,16 +19,14 @@ class EmployeeCreate extends React.Component {
     };
   }
 
-  // Handling changes in form inputs
+  // Handle input changes and update state
   handleChange = (e) => {
     const { name, value } = e.target;
-    // Dynamically update the form field based on its name
     this.setState({ [name]: value });
   };
 
-  //Function to handle the form validation
+  // Validate the form fields
   validateForm = () => {
-    //Get the value of the form fields
     const { firstName, lastName, age, dateOfJoining } = this.state;
     let errors = {};
     let formIsValid = true;
@@ -62,28 +60,24 @@ class EmployeeCreate extends React.Component {
       formIsValid = false;
     }
 
-    //Update the errors state
     this.setState({ errors });
     return formIsValid;
   };
 
-  //Function to handle the form submission
+  // Handle form submission
   handleSubmit = async (e) => {
     e.preventDefault();
-    //check if the form is valid
     if (!this.validateForm()) {
       return;
     }
 
     try {
-      //Send a POST request to the GraphQL API with the employee data
       const response = await fetch("http://localhost:8000/graphql", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          // GraphQL mutation to create a new employee
           query: `
               mutation CreateEmployee(
                 $firstName: String!
@@ -115,7 +109,6 @@ class EmployeeCreate extends React.Component {
                 }
               }
             `,
-          //variable values for the mutation properties of the employee data
           variables: {
             firstName: this.state.firstName,
             lastName: this.state.lastName,
@@ -128,14 +121,13 @@ class EmployeeCreate extends React.Component {
         }),
       });
 
-      //Get the response data from the GraphQL API
       const result = await response.json();
       if (result.errors) {
         alert("Error creating employee");
         return;
       }
 
-      // If the employee is created successfully, show a success message
+      // Display success message using SweetAlert2
       Swal.fire({
         title: "Success",
         text: "Employee created successfully!",
@@ -144,7 +136,7 @@ class EmployeeCreate extends React.Component {
         timer: 2000,
       });
 
-      // Resetting form fields after successful submission
+      // Reset the form fields
       this.setState({
         firstName: "",
         lastName: "",
@@ -155,6 +147,7 @@ class EmployeeCreate extends React.Component {
         employeeType: "FullTime",
       });
 
+      // Redirect to the employee list after a delay
       setTimeout(() => this.setState({ redirectToEmployeeList: true }), 2000);
     } catch (error) {
       console.log("Error creating employees", error);
@@ -162,7 +155,6 @@ class EmployeeCreate extends React.Component {
   };
 
   render() {
-    //Get the value of the form fields from the state
     const {
       firstName,
       lastName,
@@ -175,96 +167,141 @@ class EmployeeCreate extends React.Component {
       redirectToEmployeeList,
     } = this.state;
 
-    // If redirection is triggered, navigate to the employee list
     if (redirectToEmployeeList) {
       return <Navigate to="/employee-list" />;
     }
 
     return (
       <div className="create-employee">
-        <form onSubmit={this.handleSubmit}>
+        <Container className="my-5">
           <h2 className="create-employee-heading">Add Employee</h2>
-          <div className="form-group">
-            <label>First Name:</label>
-            <input
-              type="text"
-              name="firstName"
-              value={firstName}
-              onChange={this.handleChange}
-            />
-            {errors.firstName && (
-              <div className="error">{errors.firstName}</div>
-            )}
-          </div>
-          <div className="form-group">
-            <label>Last Name:</label>
-            <input
-              type="text"
-              name="lastName"
-              value={lastName}
-              onChange={this.handleChange}
-            />
-            {errors.lastName && <div className="error">{errors.lastName}</div>}
-          </div>
-          <div className="form-group">
-            <label>Age:</label>
-            <input
-              type="number"
-              name="age"
-              value={age}
-              onChange={this.handleChange}
-            />
-            {errors.age && <div className="error">{errors.age}</div>}
-          </div>
-          <div className="form-group">
-            <label>Date of Joining:</label>
-            <input
-              type="date"
-              name="dateOfJoining"
-              value={dateOfJoining}
-              onChange={this.handleChange}
-            />
-            {errors.dateOfJoining && (
-              <div className="error">{errors.dateOfJoining}</div>
-            )}
-          </div>
-          <div className="form-group">
-            <label>Title:</label>
-            <select name="title" value={title} onChange={this.handleChange}>
-              <option value="Employee">Employee</option>
-              <option value="Manager">Manager</option>
-              <option value="Director">Director</option>
-              <option value="VP">VP</option>
-            </select>
-          </div>
-          <div className="form-group">
-            <label>Department:</label>
-            <select
-              name="department"
-              value={department}
-              onChange={this.handleChange}
-            >
-              <option value="IT">IT</option>
-              <option value="Marketing">Marketing</option>
-              <option value="HR">HR</option>
-              <option value="Engineering">Engineering</option>
-            </select>
-          </div>
-          <div className="form-group">
-            <label>Employee Type:</label>
-            <select
-              name="employeeType"
-              value={employeeType}
-              onChange={this.handleChange}
-            >
-              <option value="FullTime">FullTime</option>
-              <option value="PartTime">PartTime</option>
-              <option value="Contract">Contract</option>
-              <option value="Seasonal">Seasonal</option>
-            </select>
-          </div>
-          <button type="submit">Add Employee</button>
-        </form>
+          <Form onSubmit={this.handleSubmit}>
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3" controlId="formFirstName">
+                  <Form.Label>First Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="firstName"
+                    value={firstName}
+                    onChange={this.handleChange}
+                    placeholder="Enter first name"
+                  />
+                  {errors.firstName && (
+                    <Form.Text className="error">
+                      {errors.firstName}
+                    </Form.Text>
+                  )}
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3" controlId="formLastName">
+                  <Form.Label>Last Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="lastName"
+                    value={lastName}
+                    onChange={this.handleChange}
+                    placeholder="Enter last name"
+                  />
+                  {errors.lastName && (
+                    <Form.Text className="error">
+                      {errors.lastName}
+                    </Form.Text>
+                  )}
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col md={4}>
+                <Form.Group className="mb-3" controlId="formAge">
+                  <Form.Label>Age</Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="age"
+                    value={age}
+                    onChange={this.handleChange}
+                    placeholder="Enter age"
+                  />
+                  {errors.age && (
+                    <Form.Text className="error">{errors.age}</Form.Text>
+                  )}
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3" controlId="formDateOfJoining">
+                  <Form.Label>Date of Joining</Form.Label>
+                  <Form.Control
+                    type="date"
+                    name="dateOfJoining"
+                    value={dateOfJoining}
+                    onChange={this.handleChange}
+                  />
+                  {errors.dateOfJoining && (
+                    <Form.Text className="error">
+                      {errors.dateOfJoining}
+                    </Form.Text>
+                  )}
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3" controlId="formTitle">
+                  <Form.Label>Title</Form.Label>
+                  <Form.Select
+                    name="title"
+                    value={title}
+                    onChange={this.handleChange}
+                  >
+                    <option value="Employee">Employee</option>
+                    <option value="Manager">Manager</option>
+                    <option value="Director">Director</option>
+                    <option value="VP">VP</option>
+                  </Form.Select>
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3" controlId="formDepartment">
+                  <Form.Label>Department</Form.Label>
+                  <Form.Select
+                    name="department"
+                    value={department}
+                    onChange={this.handleChange}
+                  >
+                    <option value="IT">IT</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="HR">HR</option>
+                    <option value="Engineering">Engineering</option>
+                  </Form.Select>
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3" controlId="formEmployeeType">
+                  <Form.Label>Employee Type</Form.Label>
+                  <Form.Select
+                    name="employeeType"
+                    value={employeeType}
+                    onChange={this.handleChange}
+                  >
+                    <option value="FullTime">FullTime</option>
+                    <option value="PartTime">PartTime</option>
+                    <option value="Contract">Contract</option>
+                    <option value="Seasonal">Seasonal</option>
+                  </Form.Select>
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <div className="text-center mb-1">
+              <Button type="submit" className="button">
+                Add Employee
+              </Button>
+            </div>
+          </Form>
+        </Container>
       </div>
     );
   }

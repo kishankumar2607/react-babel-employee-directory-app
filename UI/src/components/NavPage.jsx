@@ -54,7 +54,7 @@ const NavPage = () => {
         </Container>
       </div>
 
-      <div className="container">
+      <div>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/employee-list" element={<EmployeeDirectory />} />
