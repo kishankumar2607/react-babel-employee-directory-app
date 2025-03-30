@@ -4,49 +4,45 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Swal from "sweetalert2";
+import { ThreeCircles } from "react-loader-spinner";
+import { Container } from "react-bootstrap";
 import moment from "moment";
 import EmployeeSearch from "./EmployeeSearch.jsx";
 import EmployeeTable from "./EmployeeTable.jsx";
 
 // Helper hook to parse query params
-const useQuery = () => {
-  return new URLSearchParams(useLocation().search);
-};
+const useQuery = () => new URLSearchParams(useLocation().search);
 
 class EmployeeDirectory extends Component {
-  //Set initial state of the component
   state = {
     searchTerm: "",
     employees: [],
     loading: true,
+    // Primary filter: if "UpcomingRetirement" is selected, then use that filter mode.
     selectedEmployeeType: "All",
+    // Secondary filter for Upcoming Retirement – default is "All" (meaning all employee types)
     selectedRetirementType: "All",
   };
 
-  // Fetch employees when the component mounts
   componentDidMount() {
     this.fetchEmployees();
   }
 
-  // Update the URL when the selected employee type changes
   componentDidUpdate(prevProps, prevState) {
-    // If the selected employee type changes, update the URL
+    // Update URL when primary filter changes.
     if (prevState.selectedEmployeeType !== this.state.selectedEmployeeType) {
       this.updateUrlWithEmployeeType();
     }
   }
 
-  // Method to update the URL with the selected employee type
   updateUrlWithEmployeeType = () => {
     const { selectedEmployeeType } = this.state;
     this.props.navigate(`?employeeType=${selectedEmployeeType}`);
   };
 
-  // Fetch employees from the server using the GraphQL API
+  // Fetch employees using GraphQL
   fetchEmployees = async () => {
     const { selectedEmployeeType } = this.state;
-
-    // Prepare the GraphQL query based on the selected employee type
     let query = `
       {
         getEmployees {
@@ -62,9 +58,11 @@ class EmployeeDirectory extends Component {
         }
       }
     `;
-
-    // If a specific employee type is selected, modify the query to filter by employee type
-    if (selectedEmployeeType !== "All") {
+    // If a specific employee type (other than UpcomingRetirement) is selected, use that query.
+    if (
+      selectedEmployeeType !== "All" &&
+      selectedEmployeeType !== "UpcomingRetirement"
+    ) {
       query = `
         {
           getEmployeesByType(employeeType: "${selectedEmployeeType}") {
@@ -81,21 +79,15 @@ class EmployeeDirectory extends Component {
         }
       `;
     }
-
     try {
-      // Make a POST request to the GraphQL API
       const response = await axios.post("http://localhost:8000/graphql", {
         query,
       });
-
-      // Extract the employee data from the response
-      const result = await response.data;
+      const result = response.data;
       if (result.errors) {
         console.log("Error fetching employees", result.errors);
         return;
       }
-
-      // Update the state with the fetched employees
       this.setState({
         employees: result.data.getEmployees || result.data.getEmployeesByType,
         loading: false,
@@ -106,22 +98,43 @@ class EmployeeDirectory extends Component {
     }
   };
 
-  // Function to calculate upcoming retirement (employees retiring in the next 6 months)
+  // Helper: Calculate an employee's current age based on their date of joining and stored age
+  getCurrentAge = (employee) => {
+    // Assume stored age is the age at the time of saving.
+    // To calculate current age, we estimate:
+    const dateOfBirth = moment(employee.dateOfJoining).subtract(
+      employee.age,
+      "years"
+    );
+    return moment().diff(dateOfBirth, "years");
+  };
+
+  // Calculate upcoming retirement for employees whose retirement date is within the next 6 months.
+  // Retirement date = dateOfJoining + (65 - currentAge) years.
   getUpcomingRetirement = () => {
     const { selectedRetirementType } = this.state;
     const today = moment();
+    const sixMonthsFromNow = moment().add(6, "months");
+    const retirementAge = 65;
 
-    return this.setState.employees.filter((employee) => {
-      const ageAtRetirement = 65; // Assuming retirement age is 60
-      const monthsToRetiment = moment().add(6, "months");
+    return this.state.employees.filter((employee) => {
+      const currentAge = this.getCurrentAge(employee);
       const retirementDate = moment(employee.dateOfJoining).add(
-        ageAtRetirement,
+        retirementAge - currentAge,
         "years"
       );
-
+      // Debug logs:
+      console.log(
+        `Employee: ${employee.firstName} ${
+          employee.lastName
+        }, Current Age: ${currentAge}, Retirement Date: ${retirementDate.format(
+          "YYYY-MM-DD"
+        )}`
+      );
       const isRetirementUpcoming =
-        employee.age === 64 && retirementDate.isBefore(monthsToRetiment);
-
+        retirementDate.isAfter(today) &&
+        retirementDate.isBefore(sixMonthsFromNow);
+      // If the secondary filter is "All", accept any employee; else check the employee type.
       if (
         isRetirementUpcoming &&
         (selectedRetirementType === "All" ||
@@ -133,40 +146,52 @@ class EmployeeDirectory extends Component {
     });
   };
 
-  // Method to handle search input
   handleSearch = (searchTerm) => {
     this.setState({ searchTerm });
   };
 
-  // Method to handle employee type change
+  // Primary filter change handler
   handleEmployeeTypeChange = (e) => {
-    this.setState({ selectedEmployeeType: e.target.value }, () => {
-      this.fetchEmployees();
-    });
+    const value = e.target.value;
+    if (value === "UpcomingRetirement") {
+      // When selecting Upcoming Retirement, set primary filter to UpcomingRetirement and default secondary to "All"
+      this.setState(
+        {
+          selectedEmployeeType: "UpcomingRetirement",
+          selectedRetirementType: "All",
+        },
+        () => {
+          this.fetchEmployees();
+        }
+      );
+    } else {
+      // Normal employee type filter; reset secondary filter to "All"
+      this.setState(
+        { selectedEmployeeType: value, selectedRetirementType: "All" },
+        () => {
+          this.fetchEmployees();
+        }
+      );
+    }
   };
 
-  // Method to handle retirement type change
+  // Secondary filter for upcoming retirement (refining by employee type)
   handleRetirementTypeChange = (e) => {
     this.setState({ selectedRetirementType: e.target.value });
   };
 
-  // Method to handle employee deletion
   handleDeleteEmployee = async (id) => {
-    // Find the employee to check currentStatus
     const employeeToDelete = this.state.employees.find(
       (employee) => employee.id === id
     );
-
-    // Check if the employee's currentStatus is active
     if (employeeToDelete && employeeToDelete.currentStatus) {
       toast.error("Can't Delete Employee - Status Active", {
         position: "top-right",
+        closeButton: false,
         autoClose: 3000,
       });
-      return; // Stop further execution if status is active
+      return;
     }
-
-    // Confirm deletion before proceeding
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -176,34 +201,29 @@ class EmployeeDirectory extends Component {
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
     });
-
     if (result.isConfirmed) {
       try {
-        // Make a POST request to the GraphQL API to delete the employee
         const response = await axios.post("http://localhost:8000/graphql", {
           query: `
-          mutation {
-            deleteEmployee(id: "${id}") {
-              success
-              message
+            mutation {
+              deleteEmployee(id: "${id}") {
+                success
+                message
+              }
             }
-          }
-        `,
+          `,
         });
-
-        // Extract the response data from the response
-        const result = response.data;
-        if (result.errors) {
+        const resData = response.data;
+        if (resData.errors) {
           toast.error("Error deleting employee", {
             position: "top-right",
+            closeButton: false,
             autoClose: 3000,
           });
-          console.log("Error deleting employee", result.errors);
+          console.log("Error deleting employee", resData.errors);
           return;
         }
-
-        // Delete the employee from the state if the deletion was successful
-        if (result.data.deleteEmployee.success) {
+        if (resData.data.deleteEmployee.success) {
           Swal.fire({
             title: "Employee deleted successfully",
             icon: "success",
@@ -217,6 +237,7 @@ class EmployeeDirectory extends Component {
         } else {
           toast.error("Failed to delete employee", {
             position: "top-right",
+            closeButton: false,
             autoClose: 3000,
           });
         }
@@ -228,7 +249,6 @@ class EmployeeDirectory extends Component {
   };
 
   render() {
-    // Destructure the state variables
     const {
       searchTerm,
       employees,
@@ -237,68 +257,83 @@ class EmployeeDirectory extends Component {
       selectedRetirementType,
     } = this.state;
 
-    // Filter the employees based on the search term
+    // Filter by search term
     let filteredEmployees = employees.filter((employee) =>
       Object.values(employee).some((value) =>
         value.toString().toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
 
-    // Filter the employees based on the selected retirement type
-    if (selectedRetirementType === "UpcomingRetirement") {
+    // If primary filter is UpcomingRetirement, use the upcoming retirement filter
+    if (selectedEmployeeType === "UpcomingRetirement") {
       filteredEmployees = this.getUpcomingRetirement();
     }
 
     return (
-      <div className="container">
-        <h1 className="employee-directory">Employee Directory</h1>
-        <div className="filter-search">
-          <EmployeeSearch setSearchTerm={this.handleSearch} />
-          <div>
-            <select
-              value={selectedEmployeeType}
-              onChange={this.handleEmployeeTypeChange}
-            >
-              <option value="All">All Employees</option>
-              <option value="FullTime">Full-Time Employees</option>
-              <option value="PartTime">Part-Time Employees</option>
-              <option value="Contract">Contract Employees</option>
-              <option value="Seasonal">Seasonal Employees</option>
-              <option value="UpcomingRetirement">Upcoming Retirement</option>
-            </select>
-          </div>
+      <div className="employee-directory-page">
+        <Container>
+          <h1 className="employee-directory">Employee Directory</h1>
 
-          {/* Show secondary filter for EmployeeType when Upcoming Retirement is selected */}
-          {selectedEmployeeType === "UpcomingRetirement" && (
-            <div>
-              <select
-                value={selectedRetirementType}
-                onChange={this.handleRetirementTypeChange}
-              >
-                <option value="All">All Employee Types</option>
-                <option value="FullTime">Full-Time</option>
-                <option value="PartTime">Part-Time</option>
-                <option value="Contract">Contract</option>
-                <option value="Seasonal">Seasonal</option>
-              </select>
+          {loading ? (
+            <div className="loading">
+              <ThreeCircles
+                visible={true}
+                height="100"
+                width="100"
+                color="#1a73e8"
+                ariaLabel="three-circles-loading"
+                wrapperStyle={{}}
+                wrapperClass=""
+              />
+            </div>
+          ) : (
+            <div className="employee-list">
+              <div className="filter-search">
+                <EmployeeSearch setSearchTerm={this.handleSearch} />
+                <div>
+                  <select
+                    value={selectedEmployeeType}
+                    onChange={this.handleEmployeeTypeChange}
+                  >
+                    <option value="All">All Employees</option>
+                    <option value="FullTime">Full-Time Employees</option>
+                    <option value="PartTime">Part-Time Employees</option>
+                    <option value="Contract">Contract Employees</option>
+                    <option value="Seasonal">Seasonal Employees</option>
+                    <option value="UpcomingRetirement">
+                      Upcoming Retirement
+                    </option>
+                  </select>
+                </div>
+                {/* If Upcoming Retirement is selected, show secondary filter */}
+                {selectedEmployeeType === "UpcomingRetirement" && (
+                  <div>
+                    <select
+                      value={selectedRetirementType}
+                      onChange={this.handleRetirementTypeChange}
+                    >
+                      <option value="All">All Employee Types</option>
+                      <option value="FullTime">Full-Time</option>
+                      <option value="PartTime">Part-Time</option>
+                      <option value="Contract">Contract</option>
+                      <option value="Seasonal">Seasonal</option>
+                    </select>
+                  </div>
+                )}
+              </div>
+              <EmployeeTable
+                employees={filteredEmployees}
+                onDeleteEmployee={this.handleDeleteEmployee}
+              />
             </div>
           )}
-        </div>
-
-        {loading ? (
-          <div className="loading">Loading...</div>
-        ) : (
-          <EmployeeTable
-            employees={filteredEmployees}
-            onDeleteEmployee={this.handleDeleteEmployee}
-          />
-        )}
+        </Container>
       </div>
     );
   }
 }
 
-// Wrapper to include the useLocation and useNavigate hooks for URL management
+// Wrapper to provide URL management using hooks
 const EmployeeDirectoryWithUrlFilter = () => {
   const query = useQuery();
   const selectedEmployeeType = query.get("employeeType") || "All";

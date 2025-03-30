@@ -7,16 +7,20 @@
 }
 
 /* Navigation Styles */
-.navbar {
+
+.navbar-container {
   background-color: #ffffff;
+  margin-bottom: 0.5rem;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.navbar {
   color: #000000;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2rem 4rem;
-  margin-bottom: 2rem;
   font-size: 18px;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 1rem 0rem;
 }
 
 .logo {
@@ -61,16 +65,23 @@
   color: #007bff;
 }
 
+/* Employee Directory Page Design */
+
+.employee-directory-page{
+  min-height: 80vh;
+}
+
 .employee-directory {
   text-align: center;
   margin-bottom: 3rem;
   margin-top: 0;
   font-size: 2.5rem;
+  font-weight: 700;
   color: #007bff;
   letter-spacing: 1px;
 }
 
-.filter-search{
+.filter-search {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -145,42 +156,45 @@ td {
 }
 
 .loading {
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-align: center;
-  padding: 20px;
-  color: #3498db;
+  height: 50vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.viewIcons{
+.viewIcons {
   font-size: 1.5rem;
   color: #000000;
   cursor: pointer;
 }
 
-.editIcons{
+.editIcons {
   font-size: 1.5rem;
   color: #4a90e2;
   cursor: pointer;
   margin: 0px 10px;
 }
 
-.deleteIcons{
+.deleteIcons {
   font-size: 1.5rem;
   color: #ff0000;
   cursor: pointer;
 }
 
-.no-employees{
+.no-employees {
   text-align: center;
   font-size: 1.5rem;
   font-weight: 700;
   color: #ff0000;
-  margin-top: 2rem;
+  height: 50vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Add Employee Form */
-.create-employee{
+.create-employee {
   width: 100% !important;
   display: flex;
   justify-content: center;
@@ -281,6 +295,7 @@ button:hover {
   font-size: 0.8rem !important;
   line-height: 24px !important;
   font-weight: 600;
+  margin-bottom: 0 !important;
 }
 
 /* Home Page Styles */
@@ -427,12 +442,12 @@ button:hover {
 /* Keyframe Animations */
 @keyframes fadeIn {
   0% {
-      opacity: 0;
-      transform: translateY(20px);
+    opacity: 0;
+    transform: translateY(20px);
   }
   100% {
-      opacity: 1;
-      transform: translateY(0);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -549,7 +564,7 @@ button:hover {
   margin-top: 10px;
 }
 
-.employee-table tbody{
+.employee-table tbody {
   padding: 2rem;
 }
 

@@ -42,8 +42,16 @@ const resolvers = {
 
     // Fetch employees by type (used for fetching employees by type)
     getEmployeesByType: async (_, { employeeType }) => {
-      // Filter employees by employeeType
-      return await Employee.find({ employeeType });
+      try {
+        const employees = await Employee.find({ employeeType: employeeType });
+        return employees.map((employee) => ({
+          ...employee.toObject(),
+          id: employee._id.toString(),
+        }));
+      } catch (error) {
+        console.error("Error fetching employees by type", error);
+        throw new Error("Error fetching employees by type");
+      }
     },
   },
 
@@ -120,7 +128,6 @@ const resolvers = {
     },
   },
 };
-
 
 const calculateRetirementInfo = (employee) => {
   const ageAtJoining = employee.age;

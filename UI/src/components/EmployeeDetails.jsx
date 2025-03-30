@@ -1,186 +1,97 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useParams } from "react-router-dom";
-import moment from "moment";
+import React from "react";
+import { Table, Button } from "react-bootstrap";
+import { FaEye, FaEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
-const EmployeeDetails = () => {
-  const { id } = useParams();
-  const [employee, setEmployee] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+// Helper function to format an ISO date string to DD/MM/YYYY in UTC
+const formatDate = (isoDate) => {
+  if (!isoDate) return "N/A";
+  const date = new Date(isoDate);
+  if (isNaN(date.getTime())) return "Invalid Date";
+  return date.toLocaleDateString("en-GB", {
+    timeZone: "UTC",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+};
 
-  // Fetch employee details by ID from the server
-  useEffect(() => {
-    const fetchEmployee = async () => {
-      try {
-        const response = await axios({
-          method: "post",
-          url: "http://localhost:8000/graphql",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          // Send a GraphQL query to fetch employee details by ID
-          data: {
-            query: `
-              query {
-                getEmployeeById(id: "${id}") {
-                  id
-                  firstName
-                  lastName
-                  age
-                  dateOfJoining
-                  title
-                  department
-                  employeeType
-                  currentStatus
-                  retirementInfo {
-                    years
-                    months
-                    days
-                  }
-                }
-              }
-            `,
-          },
-        });
+const EmployeeTable = ({ employees, onDeleteEmployee }) => {
+  const navigate = useNavigate();
 
-        // Extract employee details from the response
-        const employee = response.data.data.getEmployeeById;
+  // Navigate to employee details page
+  const handleClick = (id) => {
+    navigate(`/employee/${id}`);
+  };
 
-        // Set employee details in the state
-        if (employee) {
-          setEmployee(employee);
-        } else {
-          setError("Employee not found");
-        }
-        setIsLoading(false);
-      } catch (error) {
-        setError(error.message);
-        setIsLoading(false);
-      }
-    };
-
-    // Fetch employee details only if ID is available
-    if (id) {
-      fetchEmployee();
-    }
-  }, [id]);
-
-  // Show loading spinner while fetching employee details
-  if (isLoading) return <div className="loading">Loading...</div>;
-
-  // Show error message if there is an error while fetching employee details
-  if (error) return <div className="error-message">Error: {error}</div>;
+  // Navigate to employee edit page
+  const handleEdit = (id) => {
+    navigate(`/edit-employee/${id}`);
+  };
 
   return (
-    <div className="employee-details-container">
-      <h1 className="page-title">Employee Details</h1>
-      {employee ? (
-        <div className="employee-card">
-          <h2 className="employee-name">
-            {employee.firstName} {employee.lastName}
-          </h2>
-          <table className="employee-table">
-            <tbody>
-              <tr>
-                <td>
-                  <strong>Title</strong>
-                </td>
-                <td>:</td>
-                <td>{employee.title}</td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Department</strong>
-                </td>
-                <td>:</td>
-                <td>{employee.department}</td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Age</strong>
-                </td>
-                <td>:</td>
+    <div>
+      {employees.length > 0 ? (
+        <Table striped bordered hover responsive>
+          <thead>
+            <tr>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Age</th>
+              <th>Date of Joining</th>
+              <th>Title</th>
+              <th>Department</th>
+              <th>Employee Type</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {employees.map((employee) => (
+              <tr key={employee.id}>
+                <td>{employee.firstName}</td>
+                <td>{employee.lastName}</td>
                 <td>{employee.age}</td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Date of Joining</strong>
-                </td>
-                <td>:</td>
-                <td>
-                  {employee.dateOfJoining
-                    ? moment(employee.dateOfJoining, "YYYY-MM-DD").format(
-                        "DD MMMM YYYY"
-                      )
-                    : "N/A"}
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Status</strong>
-                </td>
-                <td>:</td>
-                <td>
-                  <span
-                    className={
-                      employee.currentStatus
-                        ? "status-working"
-                        : "status-retired"
-                    }
-                  >
-                    {employee.currentStatus ? "Working" : "Retired"}
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Employee Type</strong>
-                </td>
-                <td>:</td>
+                <td>{formatDate(employee.dateOfJoining)}</td>
+                <td>{employee.title}</td>
+                <td>{employee.department}</td>
                 <td>{employee.employeeType}</td>
-              </tr>
-              <tr>
+                <td>{employee.currentStatus ? "Working" : "Retired"}</td>
                 <td>
-                  <strong>Years Left for Retirement</strong>
-                </td>
-                <td>:</td>
-                <td>
-                  {employee.retirementInfo
-                    ? `${employee.retirementInfo.years} years`
-                    : "N/A"}
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Months Left for Retirement</strong>
-                </td>
-                <td>:</td>
-                <td>
-                  {employee.retirementInfo
-                    ? `${employee.retirementInfo.months} months`
-                    : "N/A"}
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Days Left for Retirement</strong>
-                </td>
-                <td>:</td>
-                <td>
-                  {employee.retirementInfo
-                    ? `${employee.retirementInfo.days} days`
-                    : "N/A"}
+                  <Button
+                    variant="info"
+                    size="sm"
+                    onClick={() => handleClick(employee.id)}
+                    className="me-1"
+                  >
+                    <FaEye />
+                  </Button>
+                  <Button
+                    variant="warning"
+                    size="sm"
+                    onClick={() => handleEdit(employee.id)}
+                    className="me-1"
+                  >
+                    <FaEdit />
+                  </Button>
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={() => onDeleteEmployee(employee.id)}
+                  >
+                    <MdDelete />
+                  </Button>
                 </td>
               </tr>
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </Table>
       ) : (
-        <div className="not-found">Employee not found</div>
+        <div className="no-employees">No employees found</div>
       )}
     </div>
   );
 };
 
-export default EmployeeDetails;
+export default EmployeeTable;
