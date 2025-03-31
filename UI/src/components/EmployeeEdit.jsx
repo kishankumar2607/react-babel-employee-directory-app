@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import moment from "moment";
 import Swal from "sweetalert2";
 
-const EditEmployee = () => {
+const EmployeeEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [employee, setEmployee] = useState({
@@ -224,4 +224,4 @@ const EditEmployee = () => {
   );
 };
 
-export default EditEmployee;
+export default EmployeeEdit;

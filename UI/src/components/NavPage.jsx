@@ -6,7 +6,7 @@ import EmployeeCreate from "./EmployeeCreate.jsx";
 import PageNotFound from "./PageNotFound.jsx";
 import About from "./About.jsx";
 import EmployeeDetails from "./EmployeeDetails.jsx";
-import EditEmployee from "./EditEmployee.jsx";
+import EmployeeEdit from "./EmployeeEdit.jsx";
 import { Container } from "react-bootstrap";
 
 const NavPage = () => {
@@ -60,7 +60,7 @@ const NavPage = () => {
           <Route path="/employee-list" element={<EmployeeDirectory />} />
           <Route path="/employee-create" element={<EmployeeCreate />} />
           <Route path="/employee/:id" element={<EmployeeDetails />} />
-          <Route path="/edit-employee/:id" element={<EditEmployee />} />
+          <Route path="/edit-employee/:id" element={<EmployeeEdit />} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>

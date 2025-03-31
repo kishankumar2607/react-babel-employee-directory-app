@@ -190,6 +190,12 @@ class EmployeeDirectory extends Component {
         closeButton: false,
         autoClose: 3000,
       });
+      Swal.fire({
+        title: "Can't Delete Employee - Status Active",
+        icon: "warning",
+        showConfirmButton: false,
+        timer: 2000,
+      });
       return;
     }
     const result = await Swal.fire({

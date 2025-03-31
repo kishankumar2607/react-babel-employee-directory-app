@@ -3,7 +3,8 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import moment from "moment";
 import { ThreeCircles } from "react-loader-spinner";
-import { Container, Card, Table, Spinner, Alert } from "react-bootstrap";
+import { Container, Card, Table, Alert } from "react-bootstrap";
+import { TiArrowBack } from "react-icons/ti";
 
 const EmployeeDetails = () => {
   const { id } = useParams();
@@ -104,9 +105,23 @@ const EmployeeDetails = () => {
     return <Navigate to="/employee-list" />;
   }
 
+  // Function to handle navigation back to the employee list
+  const handleBack = () => {
+    window.history.back();
+  };
+
   return (
     <Container className="my-5">
-      <h1 className="employee-directory">Employee Details</h1>
+      <div className="d-flex align-items-center justify-content-between mb-4">
+        <TiArrowBack
+          color="#007bff"
+          fontSize="2rem"
+          style={{ cursor: "pointer" }}
+          onClick={() => handleBack()}
+        />
+        <h1 className="employee-directory">Employee Details</h1>
+        <div />
+      </div>
       {employee ? (
         <Card className="shadow">
           <Card.Header className="bg-primary text-white fs-4 fw-bold">
@@ -146,7 +161,9 @@ const EmployeeDetails = () => {
                   <td>
                     <span
                       className={
-                        employee.currentStatus ? "status-working" : "status-retired"
+                        employee.currentStatus
+                          ? "status-working"
+                          : "status-retired"
                       }
                     >
                       {employee.currentStatus ? "Working" : "Retired"}
