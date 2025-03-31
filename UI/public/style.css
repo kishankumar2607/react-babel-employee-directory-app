@@ -140,7 +140,7 @@ td {
 }
 
 .loading {
-  height: 50vh;
+  height: 80vh;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -273,6 +273,42 @@ select:focus {
   font-weight: 700;
   margin-top: 0.5rem;
   padding-left: 4px;
+}
+
+.form-control-edit{
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  background-color: #007bff !important;
+  border: none !important;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+.form-control-edit div {
+  margin-bottom: 0.5rem;
+}
+
+.form-control-edit label {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #ffffff !important;
+  margin-right: 0.8rem;
+}
+
+.edit-button{
+  background-color: #ffffff !important;
+  color: #007bff !important;
+  font-size: 1.2rem !important;
+  font-weight: 700 !important;
+  border: 2px solid #ffffff !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease 0.2s;
+}
+
+.edit-button:hover {
+  background-color: transparent !important;
+  color: #ffffff !important;
 }
 
 .footerCopyRightDivStyle {
@@ -584,7 +620,6 @@ select:focus {
   font-weight: bold;
 }
 
-.loading,
 .error-message {
   font-size: 18px;
   font-weight: bold;
@@ -597,78 +632,4 @@ select:focus {
   font-weight: bold;
   color: #e74c3c;
   text-align: center;
-}
-
-.edit-employee-container {
-  width: 50%;
-  margin: 20px auto;
-  padding: 20px;
-  background: #fff;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-}
-
-h2 {
-  text-align: center;
-  color: #333;
-}
-
-.edit-employee-form {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group {
-  margin-bottom: 15px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-label {
-  font-weight: bold;
-  margin-bottom: 5px;
-  display: block;
-}
-
-input,
-select {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-button {
-  background-color: #007bff;
-  color: #fff;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-button:disabled {
-  background-color: #ccc;
-}
-
-.error-message {
-  color: red;
-  text-align: center;
-}
-
-.success-message {
-  color: green;
-  text-align: center;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  table {
-    font-size: 0.9rem;
-  }
-
-  h1 {
-    font-size: 2rem;
-  }
 }

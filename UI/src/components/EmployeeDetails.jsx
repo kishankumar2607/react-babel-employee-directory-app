@@ -129,36 +129,36 @@ const EmployeeDetails = () => {
           </Card.Header>
           <Card.Body>
             <Table bordered responsive>
-              <tbody className="fs-6">
+              <tbody className="fs-5">
                 <tr>
-                  <td>
+                  <td className="w-50 px-4">
                     <strong>Title</strong>
                   </td>
-                  <td>{employee.title}</td>
+                  <td className="px-4">{employee.title}</td>
                 </tr>
                 <tr>
-                  <td>
+                  <td className="w-50 px-4">
                     <strong>Department</strong>
                   </td>
-                  <td>{employee.department}</td>
+                  <td className="px-4">{employee.department}</td>
                 </tr>
                 <tr>
-                  <td>
+                  <td className="w-50 px-4">
                     <strong>Age</strong>
                   </td>
-                  <td>{employee.age}</td>
+                  <td className="px-4">{employee.age}</td>
                 </tr>
                 <tr>
-                  <td>
+                  <td className="w-50 px-4">
                     <strong>Date of Joining</strong>
                   </td>
-                  <td>{formatDate(employee.dateOfJoining)}</td>
+                  <td className="px-4">{formatDate(employee.dateOfJoining)}</td>
                 </tr>
                 <tr>
-                  <td>
+                  <td className="w-50 px-4">
                     <strong>Status</strong>
                   </td>
-                  <td>
+                  <td className="px-4">
                     <span
                       className={
                         employee.currentStatus
@@ -171,36 +171,36 @@ const EmployeeDetails = () => {
                   </td>
                 </tr>
                 <tr>
-                  <td>
+                  <td className="w-50 px-4">
                     <strong>Employee Type</strong>
                   </td>
-                  <td>{employee.employeeType}</td>
+                  <td className="px-4">{employee.employeeType}</td>
                 </tr>
                 <tr>
-                  <td>
+                  <td className="w-50 px-4">
                     <strong>Years Left for Retirement</strong>
                   </td>
-                  <td>
+                  <td className="px-4">
                     {employee.retirementInfo
                       ? `${employee.retirementInfo.years} years`
                       : "N/A"}
                   </td>
                 </tr>
                 <tr>
-                  <td>
+                  <td className="w-50 px-4">
                     <strong>Months Left for Retirement</strong>
                   </td>
-                  <td>
+                  <td className="px-4">
                     {employee.retirementInfo
                       ? `${employee.retirementInfo.months} months`
                       : "N/A"}
                   </td>
                 </tr>
                 <tr>
-                  <td>
+                  <td className="w-50 px-4">
                     <strong>Days Left for Retirement</strong>
                   </td>
-                  <td>
+                  <td className="px-4">
                     {employee.retirementInfo
                       ? `${employee.retirementInfo.days} days`
                       : "N/A"}
