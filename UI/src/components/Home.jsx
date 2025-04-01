@@ -35,7 +35,7 @@ const Home = () => {
           <div className="feature-card">
             <h3>Valuable Insights</h3>
             <p>
-              Gain insights into performance and attendance to make data-driven
+              Gain insights into performance and attendance to make good
               decisions.
             </p>
           </div>

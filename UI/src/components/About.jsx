@@ -3,14 +3,14 @@ import React from "react";
 const About = () => {
   return (
     <div className="about-container">
-      <div className="hero-section">
+      <div className="about-hero-section">
         <h1>About Us</h1>
         <p>
           Learn more about our mission, values, and the team behind our success.
         </p>
       </div>
 
-      <div className="section">
+      <div className="section-we-are">
         <h2>Who We Are</h2>
         <p>
           We are a team of professionals dedicated to providing efficient
@@ -20,7 +20,7 @@ const About = () => {
         </p>
       </div>
 
-      <div className="section mission">
+      <div className="mission">
         <h2>Our Mission</h2>
         <p>
           Our mission is to empower businesses with a robust and intuitive
@@ -29,11 +29,13 @@ const About = () => {
         </p>
       </div>
 
-      <div className="section contact">
+      <div className="contact">
         <h2>Contact Us</h2>
-        <p>Email: support@employeemanagementapp.com</p>
-        <p>Phone: +1 (123) 456-7890</p>
-        <p>Address: 123 Business Lane, Toronto, Canada</p>
+        <div className="contact-details">
+          <p><strong>Email:</strong> support@employeemanagementapp.com</p>
+          <p><strong>Phone:</strong> +1 (123) 456-7890</p>
+          <p><strong>Address:</strong> 123 Business Lane, Toronto, Canada</p>
+        </div>
       </div>
     </div>
   );

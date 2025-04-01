@@ -275,7 +275,7 @@ select:focus {
   padding-left: 4px;
 }
 
-.form-control-edit{
+.form-control-edit {
   display: flex;
   flex-direction: column;
   padding: 2rem;
@@ -295,7 +295,7 @@ select:focus {
   margin-right: 0.8rem;
 }
 
-.edit-button{
+.edit-button {
   background-color: #ffffff !important;
   color: #007bff !important;
   font-size: 1.2rem !important;
@@ -328,58 +328,74 @@ select:focus {
 /* Home Page Styles */
 .home-container {
   text-align: center;
-  padding: 20px 20px 50px;
 }
 
-/* Hero Section */
 .hero-section {
   background-color: #007bff;
-  color: white;
-  padding: 80px 30px;
-  border-radius: 10px;
-  margin-bottom: 50px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  color: #ffffff;
+  height: 70vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .hero-section h1 {
-  font-size: 48px;
+  font-size: 3.2rem;
+  font-weight: 700;
   margin-bottom: 20px;
   animation: fadeIn 2s ease-in-out;
 }
 
 .hero-text {
-  font-size: 20px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.6;
   margin-bottom: 30px !important;
   animation: fadeIn 2s ease-in-out;
 }
 
+a{
+  text-decoration: none !important;
+}
+
 .cta-button {
-  display: inline-block;
-  background-color: #ffdd57;
-  color: black;
-  font-size: 20px;
-  padding: 1rem 1.5rem;
-  text-decoration: none;
+  background-color: #ffffff;
+  color: #007bff;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.8rem 1.2rem;
+  border: 2px solid #ffffff;
   border-radius: 8px;
-  transition: background-color 0.3s ease-in-out;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  margin-bottom: 0;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .cta-button:hover {
-  background-color: #ffc107;
-  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+  background-color: transparent;
+  color: #ffffff;
 }
 
 /* Features Section */
 .features {
-  margin-top: 40px;
+  background: #ffffff;
+  height: 100%;
+  width: 100%;
+  padding: 5rem 0rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .features h2 {
-  font-size: 36px;
-  color: #000000;
-  margin-bottom: 30px;
-  animation: fadeIn 3s ease-in-out;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 3rem;
+  color: #007bff;
 }
 
 .feature-cards {
@@ -392,7 +408,8 @@ select:focus {
 
 .feature-card {
   background: white;
-  padding: 25px;
+  padding: 1.5rem 2rem;
+  border: 1px solid #ddd;
   border-radius: 10px;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
   max-width: 300px;
@@ -407,28 +424,29 @@ select:focus {
 
 .feature-card h3 {
   color: #007bff;
-  font-size: 24px;
+  font-size: 22px;
+  font-weight: bold;
   margin-bottom: 15px;
 }
 
 .feature-card p {
   font-size: 16px;
-  color: #555;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #000000;
 }
 
 /* Testimonial Section */
 .testimonial {
-  background-color: #f8f9fa;
-  padding: 50px 20px;
-  border-radius: 10px;
-  margin-top: 50px;
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  background-color: #007bff;
+  padding: 5rem 0rem;
 }
 
 .testimonial h2 {
-  font-size: 32px;
-  color: #000000;
-  margin-bottom: 30px;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 3rem;
+  color: #ffffff;
 }
 
 .testimonial-cards {
@@ -439,8 +457,9 @@ select:focus {
 }
 
 .testimonial-card {
-  background: #fff;
-  padding: 30px;
+  background: #ffffff;
+  padding: 1.5rem 2rem;
+  border: 1px solid #ddd;
   border-radius: 10px;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
   max-width: 350px;
@@ -456,7 +475,9 @@ select:focus {
 .testimonial-card p {
   font-size: 18px;
   font-style: italic;
-  color: #555;
+  color: #000000;
+  line-height: 1.5;
+  font-weight: 600;
   margin-bottom: 20px;
 }
 
@@ -481,64 +502,121 @@ select:focus {
 /* About Page Styles */
 .about-container {
   text-align: center;
-  padding: 20px 20px 50px;
 }
 
 /* Hero Section */
-.hero-section {
-  background-color: #007bff;
-  color: white;
-  padding: 80px 30px;
-  border-radius: 10px;
-  margin-bottom: 50px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+.about-hero-section {
+  background: url("./about-us-banner.jpg") no-repeat center center/cover;
+  color: #ffffff;
+  height: 60vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-.hero-section h1 {
-  font-size: 48px;
+.about-hero-section h1 {
+  font-size: 3.5rem;
+  font-weight: bold;
   margin-bottom: 20px;
   animation: fadeIn 2s ease-in-out;
 }
 
-.hero-section p {
-  font-size: 20px;
+.about-hero-section p {
+  font-size: 1.8rem;
+  font-weight: 600;
   margin-bottom: 0;
   animation: fadeIn 2s ease-in-out;
 }
 
-/* Section Styles */
-.section {
-  background: white;
-  padding: 40px;
-  margin: 30px auto;
-  max-width: 800px;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  text-align: center;
+.section-we-are {
+  background: #ffffff;
+  height: 100%;
+  width: 100%;
+  padding: 5rem 0rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-.section h2 {
-  font-size: 32px;
+.section-we-are h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
   color: #007bff;
-  margin-bottom: 15px;
+}
+
+.section-we-are p {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 0rem;
+  line-height: 1.6;
+  max-width: 70%;
 }
 
 /* Mission Section */
 .mission {
   background: #007bff;
-  color: white !important;
-  margin-top: 1rem;
+  height: 100%;
+  width: 100%;
+  padding: 5rem 0rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .mission h2 {
-  font-size: 32px;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
   color: #ffffff;
 }
 
+.mission p {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 0rem;
+  line-height: 1.6;
+  max-width: 60%;
+}
+
 /* Contact Section */
-.contact p {
-  font-size: 18px;
-  color: #555;
+.contact {
+  background: #ffffff;
+  height: 100%;
+  width: 100%;
+  padding: 5rem 0rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.contact h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: #007bff;
+}
+
+.contact-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.contact-details p {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 0rem;
+  line-height: 1.6;
 }
 
 /* Animations */
