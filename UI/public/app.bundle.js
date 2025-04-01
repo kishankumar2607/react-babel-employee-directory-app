@@ -415,6 +415,7 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
 
 
 var EmployeeCreate = /*#__PURE__*/function (_Component) {
+  //Constructor to initialize state
   function EmployeeCreate(props) {
     var _this;
     _classCallCheck(this, EmployeeCreate);
@@ -512,7 +513,7 @@ var EmployeeCreate = /*#__PURE__*/function (_Component) {
               alert("Error creating employee");
               return _context.abrupt("return");
             case 13:
-              // Display success message using SweetAlert2
+              // Display success message
               sweetalert2__WEBPACK_IMPORTED_MODULE_1___default().fire({
                 title: "Success",
                 text: "Employee created successfully!",
@@ -570,7 +571,10 @@ var EmployeeCreate = /*#__PURE__*/function (_Component) {
   _inherits(EmployeeCreate, _Component);
   return _createClass(EmployeeCreate, [{
     key: "render",
-    value: function render() {
+    value:
+    // Render the component
+    function render() {
+      // Destructure state variables for easier access
       var _this$state2 = this.state,
         firstName = _this$state2.firstName,
         lastName = _this$state2.lastName,
@@ -581,6 +585,8 @@ var EmployeeCreate = /*#__PURE__*/function (_Component) {
         employeeType = _this$state2.employeeType,
         errors = _this$state2.errors,
         redirectToEmployeeList = _this$state2.redirectToEmployeeList;
+
+      // navigate to the employee list page
       if (redirectToEmployeeList) {
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__.Navigate, {
           to: "/employee-list"
@@ -788,6 +794,7 @@ var EmployeeDetails = function EmployeeDetails() {
               });
             case 3:
               response = _context.sent;
+              // Check if the response contains employee data
               emp = response.data.data.getEmployeeById;
               if (emp) {
                 setEmployee(emp);
@@ -812,6 +819,8 @@ var EmployeeDetails = function EmployeeDetails() {
         return _ref.apply(this, arguments);
       };
     }();
+
+    // Fetch employee details if ID is present in the URL
     if (id) {
       fetchEmployee();
     }
@@ -850,7 +859,7 @@ var EmployeeDetails = function EmployeeDetails() {
     }, "Error: ", error));
   }
 
-  // If employee is not found, you can choose to redirect or display a message
+  // Redirect to employee list if no employee found
   if (!employee) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Navigate, {
       to: "/employee-list"
@@ -998,15 +1007,15 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
       args[_key] = arguments[_key];
     }
     _this = _callSuper(this, EmployeeDirectory, [].concat(args));
+    // Initial state of the search term, employees, loading status, primary filter, and secondary filter.
     _defineProperty(_this, "state", {
       searchTerm: "",
       employees: [],
       loading: true,
-      // Primary filter: if "UpcomingRetirement" is selected, then use that filter mode.
       selectedEmployeeType: "All",
-      // Secondary filter for Upcoming Retirement – default is "All" (meaning all employee types)
       selectedRetirementType: "All"
     });
+    // Update URL when secondary filter changes and update the state.
     _defineProperty(_this, "updateUrlWithEmployeeType", function () {
       var selectedEmployeeType = _this.state.selectedEmployeeType;
       _this.props.navigate("?employeeType=".concat(selectedEmployeeType));
@@ -1029,6 +1038,7 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
             });
           case 6:
             response = _context.sent;
+            // Check if the response contains errors
             result = response.data;
             if (!result.errors) {
               _context.next = 11;
@@ -1037,6 +1047,7 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
             console.log("Error fetching employees", result.errors);
             return _context.abrupt("return");
           case 11:
+            // If the selected employee type is UpcomingRetirement, fetch employees by type.
             _this.setState({
               employees: result.data.getEmployees || result.data.getEmployeesByType,
               loading: false
@@ -1056,10 +1067,9 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
         }
       }, _callee, null, [[3, 14]]);
     })));
-    // Helper: Calculate an employee's current age based on their date of joining and stored age
+    // Calculate current age based on the date of joining and stored age.
     _defineProperty(_this, "getCurrentAge", function (employee) {
       // Assume stored age is the age at the time of saving.
-      // To calculate current age, we estimate:
       var dateOfBirth = moment__WEBPACK_IMPORTED_MODULE_5___default()(employee.dateOfJoining).subtract(employee.age, "years");
       return moment__WEBPACK_IMPORTED_MODULE_5___default()().diff(dateOfBirth, "years");
     });
@@ -1070,12 +1080,22 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
       var today = moment__WEBPACK_IMPORTED_MODULE_5___default()();
       var sixMonthsFromNow = moment__WEBPACK_IMPORTED_MODULE_5___default()().add(6, "months");
       var retirementAge = 65;
+
+      // Get the current age of each employee and calculate their retirement date.
       return _this.state.employees.filter(function (employee) {
         var currentAge = _this.getCurrentAge(employee);
         var retirementDate = moment__WEBPACK_IMPORTED_MODULE_5___default()(employee.dateOfJoining).add(retirementAge - currentAge, "years");
-        // Debug logs:
-        console.log("Employee: ".concat(employee.firstName, " ").concat(employee.lastName, ", Current Age: ").concat(currentAge, ", Retirement Date: ").concat(retirementDate.format("YYYY-MM-DD")));
+        // console.log(
+        //   `Employee: ${employee.firstName} ${
+        //     employee.lastName
+        //   }, Current Age: ${currentAge}, Retirement Date: ${retirementDate.format(
+        //     "YYYY-MM-DD"
+        //   )}`
+        // );
+
+        // Check if the retirement date is within the next 6 months.
         var isRetirementUpcoming = retirementDate.isAfter(today) && retirementDate.isBefore(sixMonthsFromNow);
+
         // If the secondary filter is "All", accept any employee; else check the employee type.
         if (isRetirementUpcoming && (selectedRetirementType === "All" || employee.employeeType === selectedRetirementType)) {
           return true;
@@ -1083,12 +1103,13 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
         return false;
       });
     });
+    // Search functionality using the search term
     _defineProperty(_this, "handleSearch", function (searchTerm) {
       _this.setState({
         searchTerm: searchTerm
       });
     });
-    // Primary filter change handler
+    // Handle the primary filter change (employee type)
     _defineProperty(_this, "handleEmployeeTypeChange", function (e) {
       var value = e.target.value;
       if (value === "UpcomingRetirement") {
@@ -1115,6 +1136,7 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
         selectedRetirementType: e.target.value
       });
     });
+    //Handle deleting an employee
     _defineProperty(_this, "handleDeleteEmployee", /*#__PURE__*/function () {
       var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2(id) {
         var employeeToDelete, result, response, resData;
@@ -1123,7 +1145,7 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
             case 0:
               employeeToDelete = _this.state.employees.find(function (employee) {
                 return employee.id === id;
-              });
+              }); // Check if the employee is active before allowing deletion
               if (!(employeeToDelete && employeeToDelete.currentStatus)) {
                 _context2.next = 5;
                 break;
@@ -1133,6 +1155,8 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
                 closeButton: false,
                 autoClose: 3000
               });
+
+              // Show a warning message
               sweetalert2__WEBPACK_IMPORTED_MODULE_3___default().fire({
                 title: "Can't Delete Employee - Status Active",
                 icon: "warning",
@@ -1164,6 +1188,7 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
               });
             case 12:
               response = _context2.sent;
+              // Check if the response contains errors
               resData = response.data;
               if (!resData.errors) {
                 _context2.next = 18;
@@ -1177,6 +1202,8 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
               console.log("Error deleting employee", resData.errors);
               return _context2.abrupt("return");
             case 18:
+              // Check if the deletion was successful
+              // If successful, remove the employee from the state
               if (resData.data.deleteEmployee.success) {
                 sweetalert2__WEBPACK_IMPORTED_MODULE_3___default().fire({
                   title: "Employee deleted successfully",
@@ -1219,9 +1246,13 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
   _inherits(EmployeeDirectory, _Component);
   return _createClass(EmployeeDirectory, [{
     key: "componentDidMount",
-    value: function componentDidMount() {
+    value:
+    // Fetch employees when component mounts
+    function componentDidMount() {
       this.fetchEmployees();
     }
+
+    // Fetch employees when primary filter changes and update URL with the selected employee type.
   }, {
     key: "componentDidUpdate",
     value: function componentDidUpdate(prevProps, prevState) {
@@ -1233,6 +1264,7 @@ var EmployeeDirectory = /*#__PURE__*/function (_Component) {
   }, {
     key: "render",
     value: function render() {
+      // Destructure state variables for easier access
       var _this$state = this.state,
         searchTerm = _this$state.searchTerm,
         employees = _this$state.employees,
@@ -1371,6 +1403,8 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 
+
+// Initial state
 var initialState = {
   title: "",
   department: "",
@@ -1427,7 +1461,7 @@ var EmployeeEdit = function EmployeeEdit() {
               // Find the employee by ID
               foundEmployee = response.data.data.getEmployees.find(function (emp) {
                 return emp.id === id;
-              }); // If employee not found, set error message
+              }); // Check if employee is found
               if (foundEmployee) {
                 setEmployee(foundEmployee);
                 setLoading(false);
@@ -1490,6 +1524,7 @@ var EmployeeEdit = function EmployeeEdit() {
             if (response.data.errors) {
               setError("Failed to update employee");
             } else {
+              // Show success message if the employee is updated successfully
               sweetalert2__WEBPACK_IMPORTED_MODULE_2___default().fire({
                 position: "center",
                 title: "Employee Updated Successfully",
@@ -1522,7 +1557,7 @@ var EmployeeEdit = function EmployeeEdit() {
     };
   }();
 
-  // Format date for display
+  // Function to format the date for display
   var formatDisplayDate = function formatDisplayDate(dateStr) {
     if (!dateStr) return "N/A";
     return moment__WEBPACK_IMPORTED_MODULE_1___default()(dateStr).format("MMMM DD, YYYY");
@@ -1532,6 +1567,8 @@ var EmployeeEdit = function EmployeeEdit() {
   var handleBack = function handleBack() {
     window.history.back();
   };
+
+  //Show loading spinner while fetching data
   return loading ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "loading"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_loader_spinner__WEBPACK_IMPORTED_MODULE_3__.ThreeCircles, {
@@ -1810,6 +1847,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var Footer = function Footer() {
+  // Get the current year using moment.js
   var date = moment__WEBPACK_IMPORTED_MODULE_1___default()().format("YYYY");
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "footerCopyRightDivStyle"

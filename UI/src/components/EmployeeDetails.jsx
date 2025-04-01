@@ -16,6 +16,7 @@ const EmployeeDetails = () => {
   useEffect(() => {
     const fetchEmployee = async () => {
       try {
+        // Get employee details using GraphQL query
         const response = await axios({
           method: "post",
           url: "http://localhost:8000/graphql",
@@ -47,6 +48,7 @@ const EmployeeDetails = () => {
           },
         });
 
+        // Check if the response contains employee data
         const emp = response.data.data.getEmployeeById;
         if (emp) {
           setEmployee(emp);
@@ -60,6 +62,7 @@ const EmployeeDetails = () => {
       }
     };
 
+    // Fetch employee details if ID is present in the URL
     if (id) {
       fetchEmployee();
     }
@@ -100,7 +103,7 @@ const EmployeeDetails = () => {
     );
   }
 
-  // If employee is not found, you can choose to redirect or display a message
+  // Redirect to employee list if no employee found
   if (!employee) {
     return <Navigate to="/employee-list" />;
   }
@@ -122,6 +125,7 @@ const EmployeeDetails = () => {
         <h1 className="employee-directory">Employee Details</h1>
         <div />
       </div>
+      {/* Display employee details in a card format */}
       {employee ? (
         <Card className="shadow">
           <Card.Header className="bg-primary text-white fs-4 fw-bold">

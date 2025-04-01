@@ -16,6 +16,7 @@ import {
   Alert,
 } from "react-bootstrap";
 
+// Initial state
 const initialState = {
   title: "",
   department: "",
@@ -70,7 +71,7 @@ const EmployeeEdit = () => {
           (emp) => emp.id === id
         );
 
-        // If employee not found, set error message
+        // Check if employee is found
         if (foundEmployee) {
           setEmployee(foundEmployee);
           setLoading(false);
@@ -127,6 +128,7 @@ const EmployeeEdit = () => {
       if (response.data.errors) {
         setError("Failed to update employee");
       } else {
+        // Show success message if the employee is updated successfully
         Swal.fire({
           position: "center",
           title: "Employee Updated Successfully",
@@ -143,7 +145,7 @@ const EmployeeEdit = () => {
     }
   };
 
-  // Format date for display
+  // Function to format the date for display
   const formatDisplayDate = (dateStr) => {
     if (!dateStr) return "N/A";
     return moment(dateStr).format("MMMM DD, YYYY");
@@ -154,6 +156,7 @@ const EmployeeEdit = () => {
     window.history.back();
   };
 
+  //Show loading spinner while fetching data
   return loading ? (
     <div className="loading">
       <ThreeCircles
@@ -250,7 +253,7 @@ const EmployeeEdit = () => {
                   </Col>
                 </Row>
                 <Row md={12} className="mb-3">
-                  <Col >
+                  <Col>
                     <Form.Group controlId="formStatus">
                       <Form.Label>Status</Form.Label>
                       <Form.Select

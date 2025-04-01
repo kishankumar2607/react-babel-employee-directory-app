@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
 
 class EmployeeCreate extends Component {
+  //Constructor to initialize state
   constructor(props) {
     super(props);
     this.state = {
@@ -72,6 +73,7 @@ class EmployeeCreate extends Component {
     }
 
     try {
+      // Send a GraphQL mutation request to create an employee
       const response = await fetch("http://localhost:8000/graphql", {
         method: "POST",
         headers: {
@@ -121,13 +123,14 @@ class EmployeeCreate extends Component {
         }),
       });
 
+      // Get the response data from the GraphQL API
       const result = await response.json();
       if (result.errors) {
         alert("Error creating employee");
         return;
       }
 
-      // Display success message using SweetAlert2
+      // Display success message
       Swal.fire({
         title: "Success",
         text: "Employee created successfully!",
@@ -154,7 +157,10 @@ class EmployeeCreate extends Component {
     }
   };
 
+  // Render the component
   render() {
+
+    // Destructure state variables for easier access
     const {
       firstName,
       lastName,
@@ -167,6 +173,7 @@ class EmployeeCreate extends Component {
       redirectToEmployeeList,
     } = this.state;
 
+    // navigate to the employee list page
     if (redirectToEmployeeList) {
       return <Navigate to="/employee-list" />;
     }

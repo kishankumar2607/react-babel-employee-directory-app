@@ -14,20 +14,21 @@ import EmployeeTable from "./EmployeeTable.jsx";
 const useQuery = () => new URLSearchParams(useLocation().search);
 
 class EmployeeDirectory extends Component {
+  // Initial state of the search term, employees, loading status, primary filter, and secondary filter.
   state = {
     searchTerm: "",
     employees: [],
     loading: true,
-    // Primary filter: if "UpcomingRetirement" is selected, then use that filter mode.
     selectedEmployeeType: "All",
-    // Secondary filter for Upcoming Retirement – default is "All" (meaning all employee types)
     selectedRetirementType: "All",
   };
 
+  // Fetch employees when component mounts
   componentDidMount() {
     this.fetchEmployees();
   }
 
+  // Fetch employees when primary filter changes and update URL with the selected employee type.
   componentDidUpdate(prevProps, prevState) {
     // Update URL when primary filter changes.
     if (prevState.selectedEmployeeType !== this.state.selectedEmployeeType) {
@@ -35,6 +36,7 @@ class EmployeeDirectory extends Component {
     }
   }
 
+  // Update URL when secondary filter changes and update the state.
   updateUrlWithEmployeeType = () => {
     const { selectedEmployeeType } = this.state;
     this.props.navigate(`?employeeType=${selectedEmployeeType}`);
@@ -58,6 +60,7 @@ class EmployeeDirectory extends Component {
         }
       }
     `;
+
     // If a specific employee type (other than UpcomingRetirement) is selected, use that query.
     if (
       selectedEmployeeType !== "All" &&
@@ -80,14 +83,19 @@ class EmployeeDirectory extends Component {
       `;
     }
     try {
+      // Fetch employees from the server using GraphQL query
       const response = await axios.post("http://localhost:8000/graphql", {
         query,
       });
+
+      // Check if the response contains errors
       const result = response.data;
       if (result.errors) {
         console.log("Error fetching employees", result.errors);
         return;
       }
+
+      // If the selected employee type is UpcomingRetirement, fetch employees by type.
       this.setState({
         employees: result.data.getEmployees || result.data.getEmployeesByType,
         loading: false,
@@ -98,10 +106,9 @@ class EmployeeDirectory extends Component {
     }
   };
 
-  // Helper: Calculate an employee's current age based on their date of joining and stored age
+  // Calculate current age based on the date of joining and stored age.
   getCurrentAge = (employee) => {
     // Assume stored age is the age at the time of saving.
-    // To calculate current age, we estimate:
     const dateOfBirth = moment(employee.dateOfJoining).subtract(
       employee.age,
       "years"
@@ -117,23 +124,26 @@ class EmployeeDirectory extends Component {
     const sixMonthsFromNow = moment().add(6, "months");
     const retirementAge = 65;
 
+    // Get the current age of each employee and calculate their retirement date.
     return this.state.employees.filter((employee) => {
       const currentAge = this.getCurrentAge(employee);
       const retirementDate = moment(employee.dateOfJoining).add(
         retirementAge - currentAge,
         "years"
       );
-      // Debug logs:
-      console.log(
-        `Employee: ${employee.firstName} ${
-          employee.lastName
-        }, Current Age: ${currentAge}, Retirement Date: ${retirementDate.format(
-          "YYYY-MM-DD"
-        )}`
-      );
+      // console.log(
+      //   `Employee: ${employee.firstName} ${
+      //     employee.lastName
+      //   }, Current Age: ${currentAge}, Retirement Date: ${retirementDate.format(
+      //     "YYYY-MM-DD"
+      //   )}`
+      // );
+
+      // Check if the retirement date is within the next 6 months.
       const isRetirementUpcoming =
         retirementDate.isAfter(today) &&
         retirementDate.isBefore(sixMonthsFromNow);
+
       // If the secondary filter is "All", accept any employee; else check the employee type.
       if (
         isRetirementUpcoming &&
@@ -146,11 +156,12 @@ class EmployeeDirectory extends Component {
     });
   };
 
+  // Search functionality using the search term
   handleSearch = (searchTerm) => {
     this.setState({ searchTerm });
   };
 
-  // Primary filter change handler
+  // Handle the primary filter change (employee type)
   handleEmployeeTypeChange = (e) => {
     const value = e.target.value;
     if (value === "UpcomingRetirement") {
@@ -180,16 +191,21 @@ class EmployeeDirectory extends Component {
     this.setState({ selectedRetirementType: e.target.value });
   };
 
+  //Handle deleting an employee
   handleDeleteEmployee = async (id) => {
     const employeeToDelete = this.state.employees.find(
       (employee) => employee.id === id
     );
+
+    // Check if the employee is active before allowing deletion
     if (employeeToDelete && employeeToDelete.currentStatus) {
       toast.error("Can't Delete Employee - Status Active", {
         position: "top-right",
         closeButton: false,
         autoClose: 3000,
       });
+
+      // Show a warning message
       Swal.fire({
         title: "Can't Delete Employee - Status Active",
         icon: "warning",
@@ -198,6 +214,8 @@ class EmployeeDirectory extends Component {
       });
       return;
     }
+
+    // Show confirmation dialog before deleting
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -207,6 +225,8 @@ class EmployeeDirectory extends Component {
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
     });
+
+    // Create a GraphQL mutation to delete the employee
     if (result.isConfirmed) {
       try {
         const response = await axios.post("http://localhost:8000/graphql", {
@@ -219,6 +239,8 @@ class EmployeeDirectory extends Component {
             }
           `,
         });
+
+        // Check if the response contains errors
         const resData = response.data;
         if (resData.errors) {
           toast.error("Error deleting employee", {
@@ -229,6 +251,9 @@ class EmployeeDirectory extends Component {
           console.log("Error deleting employee", resData.errors);
           return;
         }
+
+        // Check if the deletion was successful
+        // If successful, remove the employee from the state
         if (resData.data.deleteEmployee.success) {
           Swal.fire({
             title: "Employee deleted successfully",
@@ -255,6 +280,7 @@ class EmployeeDirectory extends Component {
   };
 
   render() {
+    // Destructure state variables for easier access
     const {
       searchTerm,
       employees,
