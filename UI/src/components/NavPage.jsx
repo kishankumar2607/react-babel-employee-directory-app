@@ -8,6 +8,7 @@ import About from "./About.jsx";
 import EmployeeDetails from "./EmployeeDetails.jsx";
 import EmployeeEdit from "./EmployeeEdit.jsx";
 import { Container } from "react-bootstrap";
+import UpcomingRetirement from "./UpcomingRetirement.jsx";
 
 const NavPage = () => {
   return (
@@ -43,6 +44,14 @@ const NavPage = () => {
               </li>
               <li>
                 <NavLink
+                  to="/upcoming-retirements"
+                  className={({ isActive }) => (isActive ? "active" : "")}
+                >
+                  Upcoming Retirements
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
                   to="/about"
                   className={({ isActive }) => (isActive ? "active" : "")}
                 >
@@ -59,6 +68,7 @@ const NavPage = () => {
           <Route path="/" element={<Home />} />
           <Route path="/employee-list" element={<EmployeeDirectory />} />
           <Route path="/employee-create" element={<EmployeeCreate />} />
+          <Route path="/upcoming-retirements" element={<UpcomingRetirement />} />
           <Route path="/employee/:id" element={<EmployeeDetails />} />
           <Route path="/edit-employee/:id" element={<EmployeeEdit />} />
           <Route path="/about" element={<About />} />
